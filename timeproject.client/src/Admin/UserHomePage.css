@@ -1,0 +1,111 @@
+.home-container {
+    font-family: Arial, sans-serif;
+    color: #333;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 50px 200px;
+    margin-top: 0px; /* Navbar'ýn altýna yerleþtirilen header */
+}
+
+    .header h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+    }
+
+    .header p {
+        font-size: 1.5rem;
+        margin-top: 0;
+        bottom: 20px; /* Header'ýn alt kýsmýnda konumlandýrýyoruz */
+        left: 100%;
+        animation: slideIn 10s linear infinite;
+    }
+
+@keyframes slideIn {
+    0% {
+        left: 100%; /* Baþlangýç: saðda, ekran dýþýnda */
+    }
+
+    50% {
+        left: 50%; /* Ortada */
+        transform: translateX(-50%); /* Yatayda tam ortalamak için */
+    }
+
+    100% {
+        left: -100%; /* Bitiþ: solda, ekran dýþýnda */
+    }
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #4CAF50;
+    padding: 15px 0;
+    z-index: 1000;
+}
+
+    .navbar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: flex-end; /* Tüm öðeleri saða hizalar */
+        width: 100%;
+    }
+
+    .navbar li:first-child {
+        margin-left: 70px; /* "Anasayfa" öðesinin sol tarafýndaki boþluðu kaldýrýr */
+        margin-right: auto; /* "Anasayfa" öðesini sola yerleþtirir */
+    }
+
+    .navbar li {
+        margin: 0 15px;
+    }
+
+    .navbar a {
+        text-decoration: none;
+        font-size: 1.2rem;
+        color: white;
+        font-weight: bold;
+    }
+
+        .navbar a:hover {
+            color: #f9f9f9;
+            text-decoration: underline;
+        }
+
+
+
+
+.home-services {
+    margin-top: 150px; /* Header'ýn altýndaki boþluk için */
+    text-align: center;
+}
+
+.service-list {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.service-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    width: 250px;
+    text-align: center;
+}
+
+.home-footer {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 1rem;
+    color: #777;
+}

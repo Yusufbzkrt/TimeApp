@@ -1,13 +1,13 @@
 {
   "Version": 1,
-  "Hash": "tvySfO6c2XFvKYtPJGLSGNt8A7kCuYx6/4sIHag0AfA=",
+  "Hash": "RHRnE0j80/zepkWtUwFo5ZUQ34BDju7pA8m49AdNozc=",
   "Source": "TimeProject.Server",
   "BasePath": "_content/TimeProject.Server",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [
     {
-      "Identity": "C:\\Users\\yusuf\\source\\repos\\TimeProject\\timeproject.client\\timeproject.client.esproj",
+      "Identity": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\timeproject.client\\timeproject.client.esproj",
       "Version": 2,
       "Source": "timeproject.client",
       "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
@@ -18,6 +18,223 @@
       "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
     }
   ],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "TimeProject.Server\\wwwroot",
+      "Source": "TimeProject.Server",
+      "ContentRoot": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\",
+      "BasePath": "_content/TimeProject.Server",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\images\\default-user.jpg",
+      "SourceId": "TimeProject.Server",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\",
+      "BasePath": "_content/TimeProject.Server",
+      "RelativePath": "images/default-user#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "tzn1a5gz8h",
+      "Integrity": "uW12iTTOFW4hjOyZIiz+AZdrWnQDiM1YJoJe/IeXB9s=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\default-user.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\images\\mona.jpg",
+      "SourceId": "TimeProject.Server",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\",
+      "BasePath": "_content/TimeProject.Server",
+      "RelativePath": "images/mona#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "5fyigvj3vk",
+      "Integrity": "P6WW+tIIV0fYvOjKEGo0crZizC7/expus2/UwtW04TY=",
+      "CopyToOutputDirectory": "PreserveNewest",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\mona.jpg"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "images/default-user.jpg",
+      "AssetFile": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\images\\default-user.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8273"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uW12iTTOFW4hjOyZIiz+AZdrWnQDiM1YJoJe/IeXB9s=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 08 Apr 2025 14:13:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-uW12iTTOFW4hjOyZIiz+AZdrWnQDiM1YJoJe/IeXB9s="
+        }
+      ]
+    },
+    {
+      "Route": "images/default-user.tzn1a5gz8h.jpg",
+      "AssetFile": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\images\\default-user.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8273"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uW12iTTOFW4hjOyZIiz+AZdrWnQDiM1YJoJe/IeXB9s=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 08 Apr 2025 14:13:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "tzn1a5gz8h"
+        },
+        {
+          "Name": "label",
+          "Value": "images/default-user.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-uW12iTTOFW4hjOyZIiz+AZdrWnQDiM1YJoJe/IeXB9s="
+        }
+      ]
+    },
+    {
+      "Route": "images/mona.5fyigvj3vk.jpg",
+      "AssetFile": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\images\\mona.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21203"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"P6WW+tIIV0fYvOjKEGo0crZizC7/expus2/UwtW04TY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 08 Apr 2025 13:58:12 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5fyigvj3vk"
+        },
+        {
+          "Name": "label",
+          "Value": "images/mona.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-P6WW+tIIV0fYvOjKEGo0crZizC7/expus2/UwtW04TY="
+        }
+      ]
+    },
+    {
+      "Route": "images/mona.jpg",
+      "AssetFile": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\images\\mona.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21203"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"P6WW+tIIV0fYvOjKEGo0crZizC7/expus2/UwtW04TY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 08 Apr 2025 13:58:12 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-P6WW+tIIV0fYvOjKEGo0crZizC7/expus2/UwtW04TY="
+        }
+      ]
+    }
+  ]
 }

@@ -1,0 +1,124 @@
+/* MyContact sayfasý için özel stil */
+
+.my-contact-container {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 40px;
+    margin-top: 80px; /* Navbar'ýn hemen altýnda baþlayacak */
+}
+
+.my-contact-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #4CAF50;
+}
+
+    .my-contact-header h2 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #4CAF50;
+    }
+
+.my-contact-content {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.my-contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+    .my-contact-info p {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .my-contact-info strong {
+        color: #4CAF50;
+    }
+.user-image {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.user-profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Yuvarlak fotoðraf için */
+    object-fit: cover; /* Fotoðrafýn sýðdýrýlmasý */
+    border: 2px solid #4CAF50; /* Fotoðrafýn etrafýnda bir sýnýr */
+}
+.my-contact-footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 1rem;
+    color: #777;
+}
+
+/* Yükleniyor göstergesi */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #4CAF50;
+}
+
+    .loading-spinner:before {
+        content: "";
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4CAF50;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Bilgiler yüklenemedi hatasý */
+.error-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: red;
+    margin-top: 20px;
+}
+
+/* Düzenle butonu */
+.edit-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .edit-button:hover {
+        background-color: #45a049;
+    }

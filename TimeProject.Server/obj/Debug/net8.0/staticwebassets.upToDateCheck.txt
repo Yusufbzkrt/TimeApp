@@ -1,0 +1,2 @@
+wwwroot\images\default-user.jpg
+wwwroot\images\mona.jpg

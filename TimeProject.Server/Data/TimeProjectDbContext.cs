@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeProject.Server.Model;
+using TimeProject.Server.Model.Configuration;
 
 namespace TimeProject.Server.Data
 {
@@ -27,7 +28,10 @@ namespace TimeProject.Server.Data
                 .HasMany(u => u.UserServices)
                 .WithOne(s => s.User)
                 .HasForeignKey(s => s.UserId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
     }
 }

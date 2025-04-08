@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using TimeProject.Server.Data;
 using TimeProject.Server.Model;
 using TimeProject.Server.Model.Dto;
@@ -12,11 +16,13 @@ namespace TimeProject.Server.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly TimeProjectDbContext _context;
 
-        public AuthController(TimeProjectDbContext context)
+        public AuthController(TimeProjectDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -33,7 +39,7 @@ namespace TimeProject.Server.Controllers
                 return BadRequest(new { message = "Bu email adresi zaten kayıtlı." });
             }
 
-            var user = new User
+            var user = new Model.User
             {
                 Name = registerDto.Name,
                 Surname = registerDto.Surname,
@@ -56,18 +62,55 @@ namespace TimeProject.Server.Controllers
             return Ok(new { message = "Kayıt başarılı.", userId = user.UserId });
         }
 
-        [HttpGet]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
-            if (user == null)
+            try
             {
-                return Unauthorized(new { message = "Geçersiz kullanıcı adı veya Şifre" });
+                var user = await _context.User
+                    .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+
+                if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+                {
+                    return Unauthorized(new { message = "Geçersiz kullanıcı adı veya şifre" });
+                }
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_configuration["Token:SecurityKey"]);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Email, loginDto.Email),
+            }),
+                    Expires = DateTime.UtcNow.AddMinutes(20),
+                    Issuer = _configuration["Token:Issuer"],
+                    Audience = _configuration["Token:Audience"],
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var tokenString = tokenHandler.WriteToken(token);
+
+                if (string.IsNullOrEmpty(tokenString))
+                {
+                    return Unauthorized(new { message = "Token oluşturulamadı." });
+                }
+
+                Console.WriteLine("Generated Token: " + tokenString);
+
+                return Ok(new { Token = tokenString });
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error during login: " + ex.Message);
+                return StatusCode(500, new { message = "Internal server error" });
+            }
         }
 
-        
+
+
 
     }
 }
