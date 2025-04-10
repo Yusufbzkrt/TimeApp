@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeProject.Server.Data;
 
@@ -11,9 +12,11 @@ using TimeProject.Server.Data;
 namespace TimeProject.Server.Migrations
 {
     [DbContext(typeof(TimeProjectDbContext))]
-    partial class TimeProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250409070702_BlogModelCreate")]
+    partial class BlogModelCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,9 +121,12 @@ namespace TimeProject.Server.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("EventsId");
 
-                    b.HasIndex("CreatedByUserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Events");
                 });
@@ -349,11 +355,11 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 1,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 4, 10, 11, 35, 57, 34, DateTimeKind.Local).AddTicks(4683),
+                            CreateDate = new DateTime(2025, 4, 9, 10, 7, 1, 525, DateTimeKind.Local).AddTicks(4656),
                             Email = "admin@example.com",
                             ImageUrl = "/images/mona.jpg",
                             Name = "Yusuf",
-                            PasswordHash = "$2a$11$ipBqJP9XwPU8rSJlo0uGtuX8dkeahznWVZsblc509YsgQnHfvd0cq",
+                            PasswordHash = "$2a$11$gurHcu67NeQ9NKqzmz8f7OjM/qzqEaVYJbMmss2v0fcH6Ys9daljq",
                             PhoneNumber = "1234567890",
                             RoleId = 1,
                             Surname = "Bozkurt",
@@ -381,10 +387,8 @@ namespace TimeProject.Server.Migrations
             modelBuilder.Entity("TimeProject.Server.Model.Events", b =>
                 {
                     b.HasOne("TimeProject.Server.Model.User", "User")
-                        .WithMany("Events")
-                        .HasForeignKey("CreatedByUserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -454,8 +458,6 @@ namespace TimeProject.Server.Migrations
 
             modelBuilder.Entity("TimeProject.Server.Model.User", b =>
                 {
-                    b.Navigation("Events");
-
                     b.Navigation("UserServices");
                 });
 #pragma warning restore 612, 618

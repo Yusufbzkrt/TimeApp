@@ -292,5 +292,5 @@ C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\bin\Debug\net8.0\Newt
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\bin\Debug\net8.0\TimeProject.Server.staticwebassets.runtime.json
-C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\bin\Debug\net8.0\wwwroot\images\mona.jpg
+C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

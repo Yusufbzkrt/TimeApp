@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TimeProject.Server.Data;
+using TimeProject.Server.Model;
 using TimeProject.Server.Model.Dto;
 
 namespace TimeProject.Server.Controllers.User
@@ -116,6 +117,98 @@ namespace TimeProject.Server.Controllers.User
                 return StatusCode(500, new { message = "Sunucu hatası", details = ex.Message });
             }
         }
+
+        //blog oluştur
+        [HttpPost("BlogAdd")]
+        public async Task<IActionResult> BlogAdd([FromBody] BlogAddDto newPost)
+        {
+            try
+            {
+                var blog = new Blog
+                {
+                    Title = newPost.Title,
+                    Content = newPost.Content,
+                    Date = DateTime.Now
+                };
+
+                _context.Blog.Add(blog);
+                await _context.SaveChangesAsync();
+
+                return Ok(blog);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Blog eklenirken hata oluştu", details = ex.Message });
+            }
+        }
+
+        // Tüm blogları getir
+        [HttpGet("GetBlog")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var blogs = await _context.Blog
+                    .OrderByDescending(b => b.Date)
+                    .ToListAsync();
+
+                return Ok(blogs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Bloglar alınamadı", details = ex.Message });
+            }
+        }
+
+        [HttpDelete("BlogDelete/{blogId}")]
+        public async Task<IActionResult> DeleteBlog(int blogId)
+        {
+            var blog = await _context.Blog.FindAsync(blogId);
+            if (blog == null)
+            {
+                return NotFound(new { message = "Blog bulunamadı." }); // Hata mesajı döner
+            }
+
+            _context.Blog.Remove(blog);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Blog başarıyla silindi." }); // Başarılı mesaj döner
+        }
+
+        [HttpGet("GetBlog/{BlogId}")]
+        public async Task<IActionResult> GetBlog(int BlogId)
+        {
+            var blog = _context.Blog.FirstOrDefault(b => b.BlogId == BlogId);
+            if (blog == null)
+                return NotFound(); 
+            
+            return Ok(blog);
+        }
+
+        [HttpPut("MyBlogEdit/{BlogId}")]
+        public async Task<IActionResult> MyBlogEdit(int BlogId, [FromBody] Blog updatedBlog)
+        {
+            if (BlogId != updatedBlog.BlogId)
+            {
+                return BadRequest("Blog ID'leri eşleşmiyor.");
+            }
+
+            var blog = await _context.Blog.FindAsync(BlogId);
+            if (blog == null)
+            {
+                return NotFound("Blog bulunamadı.");
+            }
+
+            blog.Title = updatedBlog.Title;
+            blog.Content = updatedBlog.Content;
+
+            _context.Blog.Update(blog);
+            await _context.SaveChangesAsync();
+
+            return Ok("Blog başarıyla güncellendi.");
+        }
+
+
 
     }
 

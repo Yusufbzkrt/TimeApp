@@ -22,7 +22,7 @@ const HomePage = () => {
             <nav className="navbar">
                 <ul>
                     <li><Link to="/"><strong>Anasayfa</strong></Link></li>
-                    <li><Link to="/MyServices">Etkinliklerim</Link></li>
+                    <li><Link to="/Etkinlikler">Etkinliklerim</Link></li>
                     <li><Link to="/MyContact">Iletisim</Link></li>
                     <li><Link to="/MyHelp">Yardim</Link></li>
                     <li><Link to="/MyBlog">Bloglarým</Link></li>
