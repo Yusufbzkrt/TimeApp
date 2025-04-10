@@ -7,6 +7,8 @@ using TimeProject.Server.Model.Dto;
 
 namespace TimeProject.Server.Controllers.User
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class EventsController : ControllerBase
     {
         private readonly TimeProjectDbContext _context;
@@ -15,15 +17,21 @@ namespace TimeProject.Server.Controllers.User
         {
             _context = context;
         }
+
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Events>>> GetEvents()
         {
             return await _context.Events.Include(e => e.User).ToListAsync();
         }
 
         [HttpGet("GetEvents")]
-        public async Task<ActionResult<Events>> GetEvent()
+        public async Task<ActionResult<IEnumerable<Events>>> GetEventsForUser()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized("Kullanıcı kimliği doğrulanamadı.");
+            }
             var createdByUserId = int.Parse(userId);
 
             var events = await _context.Events
@@ -42,7 +50,6 @@ namespace TimeProject.Server.Controllers.User
         {
             var eventEntity = new Events
             {
-
                 EventName = evntDto.EventName,
                 Description = evntDto.Description,
                 DateTime = evntDto.DateTime,
@@ -59,26 +66,46 @@ namespace TimeProject.Server.Controllers.User
                 CreatedByUserID = eventEntity.CreatedByUserID,
             };
 
-            return CreatedAtAction(nameof(GetEvent), new { id = resultDto.EventsId }, resultDto);
+            return Ok(resultDto);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEvent(int id, Events evnt)
+        [HttpPut("{eventsId}")]
+        public async Task<IActionResult> PutEvent(int eventsId, EventsDto evntDto)
         {
-            if (id != evnt.EventsId) return BadRequest();
-            _context.Entry(evnt).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
+            // Etkinlik var mı kontrol et
+            var evnt = await _context.Events.FindAsync(eventsId);
+            if (evnt == null)
+            {
+                return NotFound(new { errorText = "Etkinlik bulunamadı." });
+            }
+
+            // Etkinlik verilerini güncelle
+            evnt.EventName = evntDto.EventName;
+            evnt.Description = evntDto.Description;
+            evnt.DateTime = evntDto.DateTime;
+
+            try
+            {
+                // Veritabanı kaydını güncelle
+                _context.Entry(evnt).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Etkinlik başarıyla güncellendi." });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { errorText = "Etkinlik güncellenirken bir hata oluştu." });
+            }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEvent(int id)
+
+        [HttpDelete("{eventsId}")]
+        public async Task<IActionResult> DeleteEvent(int eventsId)
         {
-            var evnt = await _context.Events.FindAsync(id);
+            var evnt = await _context.Events.FindAsync(eventsId);
             if (evnt == null) return NotFound();
             _context.Events.Remove(evnt);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(new { message = "Etkinlik başarıyla silindi." });
         }
     }
 }

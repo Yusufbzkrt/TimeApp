@@ -10,37 +10,56 @@ const Etkinlikler = () => {
     // Etkinlikleri çek
     const fetchEvents = async () => {
         try {
-            const res = await fetch('https://localhost:7120/api/User/GetEvents');
-            const data = await res.json();
+            const res = await fetch('https://localhost:7120/api/events/GetEvents', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                }
+            });
+
+            if (!res.ok) {
+                throw new Error(`API hata: ${res.status}`);
+            }
+
+            const text = await res.text();
+            console.log('API yanıtı:', text);
+
+            if (!text) {
+                setEvents([]);
+                return;
+            }
+
+            const data = JSON.parse(text);
             setEvents(data);
+
         } catch (err) {
-            console.error('Etkinlikler çekilirken hata:', err);
+            setEvents([]);
         }
     };
 
-    // Sayfa yüklendiğinde etkinlikleri getir
+
+
     useEffect(() => {
         fetchEvents();
     }, []);
 
-    const handleDelete = async (eventId) => {
-        if (!eventId) {
+    const handleDelete = async (eventsId) => {
+        if (!eventsId) {
             alert('Geçersiz etkinlik ID');
             return;
         }
 
         try {
-            const res = await fetch(`https://localhost:7120/api/User/EventDelete/${eventId}`, {
+            const res = await fetch(`https://localhost:7120/api/Events/${eventsId}`, {
                 method: 'DELETE',
             });
 
-            const data = await res.json();
+            const data = await res.text(); // JSON olarak yanıtı al
 
             if (res.ok) {
-                fetchEvents();
-                alert(data.message);
+                fetchEvents(); // Etkinlikleri güncelle
+                alert(data.message || 'Etkinlik başarıyla silindi.');
             } else {
-                alert(data.message || 'Etkinlik silinirken bir hata oluştu.');
+                alert(data.errorText || 'Etkinlik silinirken bir hata oluştu.');
             }
         } catch (err) {
             console.error('Silme hatası:', err);
@@ -48,19 +67,25 @@ const Etkinlikler = () => {
         }
     };
 
+
     // Güncelleme işlemi
-    const handleEdit = (event) => {
-        navigate(`/user/etkinlikler/duzenle/${event.eventId}`);
+    const handleEdit = (eventsId) => {
+        navigate(`/user/etkinlikler/duzenle/${eventsId}`);
     };
 
     // Etkinlik ekle
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('https://localhost:7120/api/User/EventAdd', {
+            const res = await fetch('https://localhost:7120/api/Events/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
+                body: JSON.stringify({
+                    EventName: form.title,      
+                    Description: form.description,
+                    DateTime: form.date,         
+                    CreatedByUserID: 1       
+                }),
             });
 
             if (res.ok) {
@@ -72,6 +97,7 @@ const Etkinlikler = () => {
         } catch (err) {
             console.error('Etkinlik ekleme hatası:', err);
         }
+
     };
 
     return (
@@ -105,16 +131,16 @@ const Etkinlikler = () => {
 
             <div className="events-list">
                 <h2>Etkinlikler</h2>
-                {events.map((event, index) => (
+                {events.map((events, index) => (
                     <div key={index} className="event-item">
-                        <h3>{event.title}</h3>
-                        <p>{event.description}</p>
-                        <small>{new Date(event.date).toLocaleString()}</small>
+                        <h3>{events.eventName}</h3>
+                        <p>{events.description}</p>
+                        <small>{new Date(events.dateTime).toLocaleString()}</small>
                         <div className="button-container">
-                            <button className="delete-button" onClick={() => handleDelete(event.eventId)}>
+                            <button className="delete-button" onClick={() => handleDelete(events.eventsId)}>
                                 Sil
                             </button>
-                            <button className="edit-button" onClick={() => handleEdit(event)}>
+                            <button className="edit-button" onClick={() => handleEdit(events.eventsId)}>
                                 Düzenle
                             </button>
                         </div>

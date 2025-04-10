@@ -21,7 +21,6 @@ const LoginPage = () => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.token) {
-                    // Token'ı localStorage'a kaydediyoruz
                     localStorage.setItem('authToken', data.token);
                     window.location.href = '/user/home';  // Giriş başarılıysa anasayfaya yönlendir
                 }

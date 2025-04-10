@@ -12,6 +12,7 @@ import MyBlog from "./User/MyBlog";
 import MyContact from "./User/MyContact";
 import MyHelp from "./User/MyHelp";
 import MyServices from "./User/MyServices";
+import EditEtkinlik from './User/EditEtkinlik';
 import MyContactEdit from "./User/MyContactEdit";
 import Etkinlikler from "./User/Etkinlikler";
 
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/user/yardim" element={<MyHelp />} />
                     <Route path="myservices" element={<MyServices />} />
                     <Route path="/user/etkinlikler" element={<Etkinlikler />} />
+                    <Route path="/user/etkinlikler/duzenle/:eventsId" element={<EditEtkinlik />} />
                 </Route>
             </Routes>
         </Router>
