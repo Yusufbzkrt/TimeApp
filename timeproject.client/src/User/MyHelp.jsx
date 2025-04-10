@@ -4,7 +4,8 @@ import './MyHelp.css'; // İstersen stil ekleyebilirsin
 const Help = () => {
     return (
         <div className="help-container">
-            <h1>ℹ️ Yardım Sayfası</h1>
+            <h1><i className="fas fa-question-circle"></i> Yardım Sayfası</h1>
+
             <p>
                 <strong>Hoş geldiniz!</strong> Bu sayfa, web sitemdeki özellikleri daha iyi anlaman ve kolayca kullanabilmen için hazırlanmıştır.
             </p>

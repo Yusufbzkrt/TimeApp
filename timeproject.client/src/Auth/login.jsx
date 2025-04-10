@@ -21,24 +21,24 @@ const LoginPage = () => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.token) {
-                    // Token'ý localStorage'a kaydediyoruz
+                    // Token'Ä± localStorage'a kaydediyoruz
                     localStorage.setItem('authToken', data.token);
-                    window.location.href = '/UserHomePage';  // Giriþ baþarýlýysa anasayfaya yönlendir
+                    window.location.href = '/user/home';  // GiriÅŸ baÅŸarÄ±lÄ±ysa anasayfaya yÃ¶nlendir
                 }
             } else {
                 const errorData = await response.json();
-                alert(errorData.message); // Hata mesajý
+                alert(errorData.message); // Hata mesajÄ±
             }
         } catch (error) {
             console.error("Login error:", error);
-            alert("Bir hata oluþtu, tekrar deneyin.");
+            alert("Bir hata oluÅŸtu, tekrar deneyin.");
         }
     };
 
     return (
         <div className="login-container">
             <div className="login-card">
-                <h1 className="login-title"><i className="fa-solid fa-right-to-bracket"></i> Giriþ</h1>
+                <h1 className="login-title"><i className="fa-solid fa-right-to-bracket"></i> GiriÅŸ</h1>
                 <form onSubmit={handleLogin}>
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
@@ -51,7 +51,7 @@ const LoginPage = () => {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="password">Þifre</label>
+                        <label htmlFor="password">Åžifre</label>
                         <input
                             type="password"
                             id="password"
@@ -60,11 +60,11 @@ const LoginPage = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="login-button">Giriþ Yap</button>
+                    <button type="submit" className="login-button">GiriÅŸ Yap</button>
                 </form>
                 <div className="footer">
-                    <a href="/forgot-password" className="forgot-password">Þifrenizi mi unuttunuz?</a>
-                    <p>Hesabýnýz Yok mu? <a href="/register">Kayýt Ol</a></p>
+                    <a href="/forgot-password" className="forgot-password">Åžifrenizi mi unuttunuz?</a>
+                    <p>HesabÄ±nÄ±z Yok mu? <a href="/register">KayÄ±t Ol</a></p>
                 </div>
             </div>
         </div>

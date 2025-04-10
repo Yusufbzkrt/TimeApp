@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 import Login from './Auth/login';
 import Register from './Auth/Register';
+import UserLayout from './User/UserLayout';
 import HomePage from './HomePage/HomePage';
 import MessageList from "./Message/MessageList"; // Mesaj listesi bileþeni
 import SendMessageForm from "./Message/SendMessageForm"; // Mesaj gönderme formu bileþeni
@@ -34,17 +35,16 @@ function App() {
                 <Route path="/send-message" element={<SendMessageForm senderId={1} receiverId={2} />} /> {/* Örnek ID'ler */}
 
 
-                <Route path="/UserHomePage" element={<PrivateRoute element={UserHomePage} />} />
+                <Route path="mycontactedit" element={<MyContactEdit />} />
 
-                <Route path="/MyBlog" element={<PrivateRoute element={MyBlog} />} />
-
-                <Route path="/MyContact" element={<PrivateRoute element={MyContact} />} />
-
-                <Route path="/MyHelp" element={<PrivateRoute element={MyHelp} />} />
-
-                <Route path="/MyServices" element={<PrivateRoute element={MyServices} />} />
-                <Route path="/MyContactEdit" element={<PrivateRoute element={MyContactEdit} />} />
-                <Route path="/Etkinlikler" element={<PrivateRoute element={Etkinlikler} />} />
+                <Route path="/user" element={<UserLayout />}>
+                    <Route path="/user/home" element={<UserHomePage />} />
+                    <Route path="/user/blog" element={<MyBlog />} />
+                    <Route path="/user/iletisim" element={<MyContact />} />
+                    <Route path="/user/yardim" element={<MyHelp />} />
+                    <Route path="myservices" element={<MyServices />} />
+                    <Route path="/user/etkinlikler" element={<Etkinlikler />} />
+                </Route>
             </Routes>
         </Router>
     );
