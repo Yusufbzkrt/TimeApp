@@ -1,5 +1,4 @@
-import { fileURLToPath, URL } from 'node:url';
-
+﻿import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import fs from 'fs';
@@ -11,6 +10,11 @@ const baseFolder =
     env.APPDATA !== undefined && env.APPDATA !== ''
         ? `${env.APPDATA}/ASP.NET/https`
         : `${env.HOME}/.aspnet/https`;
+
+// ❗ Eksikse oluştur
+if (!fs.existsSync(baseFolder)) {
+    fs.mkdirSync(baseFolder, { recursive: true });
+}
 
 const certificateName = "timeproject.client";
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
@@ -25,7 +29,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
         '--format',
         'Pem',
         '--no-password',
-    ], { stdio: 'inherit', }).status) {
+    ], { stdio: 'inherit' }).status) {
         throw new Error("Could not create certificate.");
     }
 }
@@ -33,7 +37,6 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
     env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7130';
 
-// https://vitejs.dev/config/
 export default defineConfig({
     plugins: [plugin()],
     resolve: {
@@ -54,4 +57,4 @@ export default defineConfig({
             cert: fs.readFileSync(certFilePath),
         }
     }
-})
+});

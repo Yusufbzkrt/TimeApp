@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeProject.Server.Model;
+using TimeProject.Server.Model.Configuration;
 
 namespace TimeProject.Server.Data
 {
@@ -17,6 +18,7 @@ namespace TimeProject.Server.Data
         public DbSet<Services> Services { get; set; }
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<Blog> Blog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,7 +29,15 @@ namespace TimeProject.Server.Data
                 .HasMany(u => u.UserServices)
                 .WithOne(s => s.User)
                 .HasForeignKey(s => s.UserId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Events>()
+                .HasOne(e => e.User)
+                .WithMany(u => u.Events)
+                .HasForeignKey(e => e.CreatedByUserID);
+
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
     }
 }

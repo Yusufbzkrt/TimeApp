@@ -1,125 +1,123 @@
 import React, { useState } from 'react';
 import './Register.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const RegisterPage = () => {
-    const [name, setName] = useState('');
-    const [surname, setSurname] = useState('');
-    const [description, setDescription] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [serviceName, setServiceName] = useState('');
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
 
-    const handleRegister = (e) => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password !== confirmPassword) {
-            alert('Passwords do not match!');
+
+        if (formData.password !== formData.confirmPassword) {
+            alert("Şifreler eşleşmiyor!");
             return;
         }
-        // Add registration logic here
-        console.log('Name:', name);
-        console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Phone Number:', phoneNumber);
-        console.log('Service Name:', serviceName);
-        console.log('Service Name:', surname);
-        console.log('Service Name:', description);
+
+        try {
+            const response = await fetch('https://localhost:7120/api/Auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    email: formData.email,
+                    password: formData.password
+                }),
+            });
+
+            if (response.ok) {
+                alert("Kayıt başarılı! Giriş yapabilirsiniz.");
+                window.location.href = '/login';
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message);
+            }
+        } catch (error) {
+            console.error("Registration error:", error);
+            alert("Bir hata oluştu, tekrar deneyin.");
+        }
     };
 
     return (
         <div className="register-container">
             <div className="register-card">
-                <h1 className="register-title"><i className="fa-solid fa-user-plus"></i> Kayit Ol</h1>
-                <form onSubmit={handleRegister}>
+                <h1 className="register-title"><i className="fa-solid fa-user-plus"></i> Kayıt Ol</h1>
+                <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="name">Ad:</label>
+                        <label htmlFor="firstName">Ad</label>
                         <input
                             type="text"
-                            id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            id="firstName"
+                            name="firstName"
+                            value={formData.firstName}
+                            onChange={handleChange}
                             required
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="surname">Soyad:</label>
+                        <label htmlFor="lastName">Soyad</label>
                         <input
                             type="text"
-                            id="surname"
-                            value={surname}
-                            onChange={(e) => setSurname(e.target.value)}
+                            id="lastName"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleChange}
                             required
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="email">Email:</label>
+                        <label htmlFor="email">Email</label>
                         <input
                             type="email"
                             id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             required
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="password">Sifre:</label>
+                        <label htmlFor="password">Şifre</label>
                         <input
                             type="password"
                             id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
                             required
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="confirmPassword">Sifre Dogrula:</label>
+                        <label htmlFor="confirmPassword">Şifre Tekrar</label>
                         <input
                             type="password"
                             id="confirmPassword"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
                             required
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="phoneNumber">Telefon:</label>
-                        <input
-                            type="text"
-                            id="phoneNumber"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                            placeholder="05xx xxx xxxx formatinda giriniz"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="serviceName">Yetenek</label>
-                        <input
-                            type="text"
-                            id="serviceName"
-                            value={serviceName}
-                            onChange={(e) => setServiceName(e.target.value)}
-                            placeholder="Egitim vereceginiz konu basligini giriniz"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="description">Yetenek Aciklamasi</label>
-                        <textarea
-                            id="description"
-                            value={description}
-                            placeholder="Egitim vereceginiz konu hakkinda kisa bir aciklama yaziniz"
-                            onChange={(e) => setDescription(e.target.value)}
-                            required
-                            rows="4" 
-                            cols="50"
-                        />
-                    </div>
-                    <button type="submit" className="register-button">Kayit Ol</button>
+                    <button type="submit" className="register-button">Kayıt Ol</button>
                 </form>
                 <div className="footer">
-                    <p>Zaten bir hesabiniz var mi? <a href="/login">Giris Yap</a></p>
+                    <p>Zaten hesabınız var mı? <a href="/login">Giriş Yap</a></p>
                 </div>
             </div>
         </div>

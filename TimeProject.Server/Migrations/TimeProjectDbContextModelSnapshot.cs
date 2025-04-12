@@ -38,6 +38,28 @@ namespace TimeProject.Server.Migrations
                     b.ToTable("AccountStatuses");
                 });
 
+            modelBuilder.Entity("TimeProject.Server.Model.Blog", b =>
+                {
+                    b.Property<int>("BlogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogId"));
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BlogId");
+
+                    b.ToTable("Blog");
+                });
+
             modelBuilder.Entity("TimeProject.Server.Model.Credits", b =>
                 {
                     b.Property<int>("CreditsId")
@@ -96,12 +118,9 @@ namespace TimeProject.Server.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("EventsId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CreatedByUserID");
 
                     b.ToTable("Events");
                 });
@@ -174,12 +193,26 @@ namespace TimeProject.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
 
-                    b.Property<int>("RoleName")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("RoleId");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            RoleName = "User"
+                        });
                 });
 
             modelBuilder.Entity("TimeProject.Server.Model.Services", b =>
@@ -190,7 +223,7 @@ namespace TimeProject.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServicesId"));
 
-                    b.Property<DateTime>("CreatecAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("CreditsRequired")
@@ -262,7 +295,8 @@ namespace TimeProject.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("AccountStatusId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("AccountStatusId1")
                         .HasColumnType("int");
@@ -271,25 +305,33 @@ namespace TimeProject.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<string>("Surname")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("TestResult")
                         .HasColumnType("bit");
@@ -301,6 +343,22 @@ namespace TimeProject.Server.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            AccountStatusId = "Active",
+                            CreateDate = new DateTime(2025, 4, 10, 11, 35, 57, 34, DateTimeKind.Local).AddTicks(4683),
+                            Email = "admin@example.com",
+                            ImageUrl = "/images/mona.jpg",
+                            Name = "Yusuf",
+                            PasswordHash = "$2a$11$ipBqJP9XwPU8rSJlo0uGtuX8dkeahznWVZsblc509YsgQnHfvd0cq",
+                            PhoneNumber = "1234567890",
+                            RoleId = 1,
+                            Surname = "Bozkurt",
+                            TestResult = false
+                        });
                 });
 
             modelBuilder.Entity("TimeProject.Server.Model.Credits", b =>
@@ -323,8 +381,10 @@ namespace TimeProject.Server.Migrations
             modelBuilder.Entity("TimeProject.Server.Model.Events", b =>
                 {
                     b.HasOne("TimeProject.Server.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Events")
+                        .HasForeignKey("CreatedByUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -394,6 +454,8 @@ namespace TimeProject.Server.Migrations
 
             modelBuilder.Entity("TimeProject.Server.Model.User", b =>
                 {
+                    b.Navigation("Events");
+
                     b.Navigation("UserServices");
                 });
 #pragma warning restore 612, 618
