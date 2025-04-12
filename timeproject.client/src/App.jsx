@@ -5,8 +5,6 @@ import Login from './Auth/login';
 import Register from './Auth/Register';
 import UserLayout from './User/UserLayout';
 import HomePage from './HomePage/HomePage';
-import MessageList from "./Message/MessageList"; // Mesaj listesi bileþeni
-import SendMessageForm from "./Message/SendMessageForm"; // Mesaj gönderme formu bileþeni
 import UserHomePage from "./User/UserHomePage";
 import MyBlog from "./User/MyBlog";
 import MyContact from "./User/MyContact";
@@ -15,6 +13,8 @@ import MyServices from "./User/MyServices";
 import EditEtkinlik from './User/EditEtkinlik';
 import MyContactEdit from "./User/MyContactEdit";
 import Etkinlikler from "./User/Etkinlikler";
+import About from "./HomePage/About";
+import MessageComponent from "./Messages/MessageComponent";
 
 function App() {
     return (
@@ -23,18 +23,15 @@ function App() {
                 {/* Ana sayfa */}
                 <Route path="/" element={<HomePage />} />
 
-                {/* Giriþ yapma sayfasý */}
+                {/* GiriÅŸ yapma sayfasÄ± */}
                 <Route path="/login" element={<Login />} />
 
-                {/* Kayýt olma sayfasý */}
+                {/* KayÄ±t olma sayfasÄ± */}
                 <Route path="/register" element={<Register />} />
 
-                {/* Mesajlar sayfasý */}
-                <Route path="/messages" element={<MessageList userId={1} />} /> {/* userId dinamik olabilir */}
-
-                {/* Mesaj gönderme sayfasý */}
-                <Route path="/send-message" element={<SendMessageForm senderId={1} receiverId={2} />} /> {/* Örnek ID'ler */}
-
+                <Route path="/chat" element={<MessageComponent />} />
+                {/* Mesaj gÃ¶nderme sayfasÄ± */}
+                <Route path="/about" element={<About />} />
 
                 <Route path="mycontactedit" element={<MyContactEdit />} />
 
@@ -46,6 +43,7 @@ function App() {
                     <Route path="myservices" element={<MyServices />} />
                     <Route path="/user/etkinlikler" element={<Etkinlikler />} />
                     <Route path="/user/etkinlikler/duzenle/:eventsId" element={<EditEtkinlik />} />
+                   
                 </Route>
             </Routes>
         </Router>

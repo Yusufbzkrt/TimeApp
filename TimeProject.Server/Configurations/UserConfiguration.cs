@@ -34,7 +34,35 @@
                     TestResult = false,
                     AccountStatusId = "Active",
                     CreateDate = DateTime.Now
-                }
+                },
+                 new User
+                 {
+                     UserId = 2,
+                     Name = "Mehmet",
+                     Surname = "Ali",
+                     Email = "mehmet@example.com",
+                     PasswordHash = passwordHash,
+                     PhoneNumber = "05537668452",
+                     ImageUrl = "/images/mona.jpg",
+                     RoleId = 2, // Admin rolü
+                     TestResult = false,
+                     AccountStatusId = "Active",
+                     CreateDate = DateTime.Now
+                 },
+                 new User
+                 {
+                     UserId = 3,
+                     Name = "ahmet",
+                     Surname = "can",
+                     Email = "ahmet@example.com",
+                     PasswordHash = passwordHash,
+                     PhoneNumber = "05528445566",
+                     ImageUrl = "/images/mona.jpg",
+                     RoleId = 2, // Admin rolü
+                     TestResult = false,
+                     AccountStatusId = "Active",
+                     CreateDate = DateTime.Now
+                 }
             );
         }
     }

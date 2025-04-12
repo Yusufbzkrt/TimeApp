@@ -45,8 +45,11 @@ namespace TimeProject.Server.Controllers
                 Surname = registerDto.Surname,
                 Email = registerDto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
-                PhoneNumber = registerDto.PhoneNumber
+                PhoneNumber = registerDto.PhoneNumber,
+                RoleId = 2
             };
+            await _context.User.AddAsync(user);
+            await _context.SaveChangesAsync();
             if (!string.IsNullOrEmpty(registerDto.ServiceName))
             {
                 var newService = new Services
@@ -100,7 +103,14 @@ namespace TimeProject.Server.Controllers
 
                 Console.WriteLine("Generated Token: " + tokenString);
 
-                return Ok(new { Token = tokenString });
+                return Ok(new
+                {
+                    token = tokenString,
+                    userId = user.UserId,       // ✅ userId’yi ekliyoruz
+                    name = user.Name,
+                    email = user.Email
+                });
+
             }
             catch (Exception ex)
             {
