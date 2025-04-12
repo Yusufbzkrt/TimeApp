@@ -22,6 +22,7 @@ const LoginPage = () => {
                 const data = await response.json();
                 if (data.token) {
                     localStorage.setItem('authToken', data.token);
+                    localStorage.setItem("userId", data.userId);
                     window.location.href = '/user/home';  // Giriş başarılıysa anasayfaya yönlendir
                 }
             } else {

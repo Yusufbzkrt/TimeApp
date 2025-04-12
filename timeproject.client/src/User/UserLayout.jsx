@@ -17,6 +17,7 @@ const UserLayout = () => {
                     <li><Link to="/user/iletisim"><i className="fas fa-envelope"></i> İletişim</Link></li>
                     <li><Link to="/user/yardim"><i className="fas fa-question-circle"></i> Yardım</Link></li>
                     <li><Link to="/user/blog"><i className="fas fa-blog"></i> Bloglarım</Link></li>
+                    <li><Link to="/chat"><i className="fas fa-message"></i> Mesajlarım</Link></li>
                     <li className="logout">
                         <button onClick={handleLogout} className="logout-button">
                             <i className="fas fa-sign-out-alt"></i> Çıkış Yap

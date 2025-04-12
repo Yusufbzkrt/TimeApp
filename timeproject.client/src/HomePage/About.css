@@ -1,0 +1,196 @@
+/* Hakkımızda sayfası için özel stil */
+.about-container {
+    max-width: 1200px;
+    margin: 120px auto 60px;
+    padding: 0 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 20px;
+    color: white;
+}
+
+.about-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.about-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Misyon bölümü */
+.about-mission {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+.about-mission h2 {
+    color: #6366f1;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.about-mission p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4b5563;
+}
+
+/* Özellikler grid yapısı */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.feature-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    color: #6366f1;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    color: #1f2937;
+    margin-bottom: 15px;
+}
+
+.feature-card p {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* Ekip bölümü */
+.about-team {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 40px 0;
+}
+
+.about-team h2 {
+    color: #6366f1;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.about-team p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4b5563;
+}
+
+/* Değerler bölümü */
+.values-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.value-item {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.value-item h3 {
+    color: #6366f1;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.value-item p {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* İletişim bölümü */
+.about-contact {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.about-contact h2 {
+    color: #6366f1;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.about-contact p {
+    font-size: 1.1rem;
+    color: #4b5563;
+    margin-bottom: 30px;
+}
+
+.contact-button {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.contact-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Responsive tasarım */
+@media (max-width: 768px) {
+    .about-container {
+        margin: 80px auto 40px;
+    }
+
+    .about-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .about-header p {
+        font-size: 1.1rem;
+    }
+
+    .feature-card,
+    .value-item {
+        padding: 25px;
+    }
+
+    .about-mission,
+    .about-team,
+    .about-contact {
+        padding: 30px 20px;
+    }
+}

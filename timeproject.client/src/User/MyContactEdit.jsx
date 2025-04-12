@@ -10,13 +10,12 @@ const MyContactEdit = () => {
         phoneNumber: '',
         imageUrl: "",
     });
-    const [loading, setLoading] = useState(true); // Yükleniyor durumunu takip edelim
-    const [error, setError] = useState(null); // Hata durumunu kontrol edelim
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [file, setFile] = useState(null);
     const navigate = useNavigate(); 
 
     useEffect(() => {
-        // Kullanýcý bilgilerini yükleme
         const token = localStorage.getItem('authToken');
 
         if (token) {
@@ -32,7 +31,7 @@ const MyContactEdit = () => {
                     setLoading(false);
                 })
                 .catch((error) => {
-                    setError('Veri alýnýrken bir hata oluþtu.');
+                    setError('Veri alÄ±nÄ±rken bir hata oluÅŸtu.');
                     setLoading(false);
                 });
         }
@@ -45,8 +44,9 @@ const MyContactEdit = () => {
             [name]: value,
         });
     };
+
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]); // Seçilen dosyayý state'e kaydediyoruz
+        setFile(e.target.files[0]);
     };
 
     const handleSubmit = (e) => {
@@ -54,7 +54,7 @@ const MyContactEdit = () => {
 
         const token = localStorage.getItem('authToken');
         if (!token) {
-            setError('Token bulunamadý, giriþ yapmanýz gerekiyor.');
+            setError('Token bulunamadÄ±, giriÅŸ yapmanÄ±z gerekiyor.');
             return;
         }
 
@@ -66,7 +66,7 @@ const MyContactEdit = () => {
         formData.append('email', userInfo.email);
         formData.append('phoneNumber', userInfo.phoneNumber);
         if (file) {
-            formData.append('ImageUrl', file); // Resmi FormData'ya ekliyoruz
+            formData.append('ImageUrl', file);
         }
 
         fetch('https://localhost:7120/api/User/MyContactEdit', {
@@ -74,30 +74,27 @@ const MyContactEdit = () => {
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
-            body: formData, // FormData'yý gönderiyoruz
+            body: formData,
         })
             .then((response) => response.json())
             .then((data) => {
                 if (data.message) {
-                    alert(data.message); // Baþarý mesajýný göster
+                    alert(data.message);
                     navigate('/MyContact');
                 } else {
-                    setError('Bilgiler güncellenemedi.');
+                    setError('Bilgiler gÃ¼ncellenemedi.');
                 }
                 setLoading(false);
             })
             .catch((error) => {
                 console.error('Hata:', error);
-                setError('Bir hata oluþtu.');
+                setError('Bir hata oluÅŸtu.');
                 setLoading(false);
             });
     };
 
-
-
-
     if (loading) {
-        return <div className="loading-spinner">Yükleniyor...</div>;
+        return <div className="loading-spinner">YÃ¼kleniyor...</div>;
     }
 
     if (error) {
@@ -106,10 +103,9 @@ const MyContactEdit = () => {
 
     return (
         <div className="my-contact-container">
-            <h2 className="my-contact-header">Bilgileri Düzenle</h2>
+            <h2 className="my-contact-header">Bilgileri DÃ¼zenle</h2>
             <form onSubmit={handleSubmit}>
                 <div className="my-contact-info">
-
                     <input
                         type="text"
                         name="name"
@@ -139,7 +135,7 @@ const MyContactEdit = () => {
                         placeholder="Telefon"
                     />
                     <div className="image-upload">
-                        <label htmlFor="imageUpload">Profil Resmi Yükle:</label>
+                        <label htmlFor="imageUpload">Profil Resmi YÃ¼kle:</label>
                         <input
                             type="file"
                             id="imageUpload"
@@ -156,7 +152,7 @@ const MyContactEdit = () => {
                         )}
                     </div>
                 </div>
-                <button type="submit" className="submit-button">Güncelle</button>
+                <button type="submit" className="save-button">Kaydet</button>
             </form>
         </div>
     );

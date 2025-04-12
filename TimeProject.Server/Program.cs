@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+ï»¿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TimeProject.Server;
 using TimeProject.Server.Data;
 using TimeProject.Server.Hubs;
 
@@ -32,24 +34,30 @@ builder.Services.AddControllers()
     {
         opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
+
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
-// CORS yapýlandýrmasý
+
+
+// CORS yapÄ±landÄ±rmasÄ±
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins", policy =>
+    options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("https://localhost:5173") // React frontend URL'niz
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();  // Credentials (cookies veya token) desteÄŸi
     });
 });
 
 var app = builder.Build();
 
-// Middleware sýrasý
+// Middleware sÄ±rasÄ±
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -62,14 +70,14 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // CORS Middleware
-app.UseCors("AllowAllOrigins");
+app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapHub<MessageHub>("/messageHub");
 
-// Endpoint'lerin tanýmlanmasý
+// Endpoint'lerin tanÄ±mlanmasÄ±
 app.MapControllers();
-app.MapHub<MessageHub>("/messageHub"); // doðru þekilde tanýmlandý
 
 app.MapFallbackToFile("/index.html");
 

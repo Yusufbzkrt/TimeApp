@@ -19,6 +19,13 @@ namespace TimeProject.Server.Controllers.User
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _context.User.ToListAsync();
+            return Ok(users);
+        }
+
         [HttpGet("MyContact")]
         public async Task<IActionResult> MyContact()
         {
