@@ -1,2 +1,0 @@
-C:\Users\yusuf\source\repos\TimeProject\timeproject.client\obj\Debug\timeproject.client.esproj.CoreCompileInputs.cache
-C:\Users\yenimedya\Source\Repos\TimeApp\timeproject.client\obj\Debug\timeproject.client.esproj.CoreCompileInputs.cache
