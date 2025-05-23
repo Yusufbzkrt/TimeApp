@@ -105,17 +105,7 @@
     }
 }
 
-.error-message {
-    text-align: center;
-    font-size: 1.2rem;
-    color: #ef4444;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #fee2e2;
-    border-radius: 8px;
-    border: 1px solid #fecaca;
-}
-
+/* Düzenle butonu */
 .edit-button {
     display: block;
     width: 100%;

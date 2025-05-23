@@ -12,6 +12,18 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"tzn1a5gz8h"},{"Name":"integrity","Value":"sha256-uW12iTTOFW4hjOyZIiz\u002BAZdrWnQDiM1YJoJe/IeXB9s="},{"Name":"label","Value":"_content/TimeProject.Server/images/default-user.jpg"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"8273"},{"Name":"Content-Type","Value":"image/jpeg"},{"Name":"ETag","Value":"\u0022uW12iTTOFW4hjOyZIiz\u002BAZdrWnQDiM1YJoJe/IeXB9s=\u0022"},{"Name":"Last-Modified","Value":"Tue, 08 Apr 2025 19:37:34 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/TimeProject.Server/images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.brmcg3a6lx.jpg">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"brmcg3a6lx"},{"Name":"integrity","Value":"sha256-yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis="},{"Name":"label","Value":"_content/TimeProject.Server/images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"28868"},{"Name":"Content-Type","Value":"image/jpeg"},{"Name":"ETag","Value":"\u0022yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis=\u0022"},{"Name":"Last-Modified","Value":"Thu, 22 May 2025 13:45:39 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/TimeProject.Server/images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"28868"},{"Name":"Content-Type","Value":"image/jpeg"},{"Name":"ETag","Value":"\u0022yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis=\u0022"},{"Name":"Last-Modified","Value":"Thu, 22 May 2025 13:45:39 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/TimeProject.Server/images/mona.5fyigvj3vk.jpg">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\mona.jpg'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

@@ -14,10 +14,15 @@ import EditEtkinlik from './User/EditEtkinlik';
 import MyContactEdit from "./User/MyContactEdit";
 import Etkinlikler from "./User/Etkinlikler";
 import About from "./HomePage/About";
+import MyCalendar from "./User/calendar";
 import MessageComponent from "./Messages/MessageComponent";
+import { NotificationProvider } from './Notifications/NotificationContext';
+import Calendar from './User/calendar';
+import Task from './User/Task';
 
 function App() {
     return (
+        <NotificationProvider>
         <Router>
             <Routes>
                 {/* Ana sayfa */}
@@ -26,8 +31,12 @@ function App() {
                 {/* Giriş yapma sayfası */}
                 <Route path="/login" element={<Login />} />
 
+                    <Route path="/calendar" element={<Calendar />} />
+
+                    <Route path="/task" element={<Task />} />
                 {/* Kayıt olma sayfası */}
                 <Route path="/register" element={<Register />} />
+
 
                 <Route path="/chat" element={<MessageComponent />} />
                 {/* Mesaj gönderme sayfası */}
@@ -46,7 +55,8 @@ function App() {
                    
                 </Route>
             </Routes>
-        </Router>
+            </Router>
+        </NotificationProvider>
     );
 }
 

@@ -18,6 +18,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\default-user.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>TimeProject.Server</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/TimeProject.Server</BasePath>
+      <RelativePath>images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>brmcg3a6lx</Fingerprint>
+      <Integrity>yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\mona.jpg'))">
       <SourceType>Package</SourceType>
       <SourceId>TimeProject.Server</SourceId>

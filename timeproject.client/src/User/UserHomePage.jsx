@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faClock, faTasks, faUser, faBell, faCog, faSignOutAlt, faHome, faChartLine, faFileAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -6,6 +6,21 @@ import "./UserHomePage.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const UserHomePage = () => {
+
+    const [notifications, setNotifications] = useState([
+        {
+            id: 1,
+            title: "Hoşgeldiniz",
+            message: "Zaman yönetim uygulamasına hoşgeldiniz.",
+            time: "10:00",
+            unread: true,
+        },
+        // İstersen burada varsayılan birkaç bildirim koyabilirsin.
+    ]);
+
+    const clearNotifications = () => {
+        setNotifications([]);
+    };
     return (
         <div className="user-home-container">
             {/* Sidebar */}
@@ -18,15 +33,15 @@ const UserHomePage = () => {
                         <FontAwesomeIcon icon={faHome} />
                         <span>Ana Sayfa</span>
                     </Link>
-                    <Link to="/user/profile" className="sidebar-item">
+                    <Link to="/user/iletisim" className="sidebar-item">
                         <FontAwesomeIcon icon={faUser} />
                         <span>Profil</span>
                     </Link>
-                    <Link to="/user/calendar" className="sidebar-item">
+                    <Link to="/calendar" className="sidebar-item">
                         <FontAwesomeIcon icon={faCalendar} />
                         <span>Takvim</span>
                     </Link>
-                    <Link to="/user/tasks" className="sidebar-item">
+                    <Link to="/task" className="sidebar-item">
                         <FontAwesomeIcon icon={faTasks} />
                         <span>Görevler</span>
                     </Link>
@@ -126,33 +141,23 @@ const UserHomePage = () => {
             <div className="notification-panel">
                 <div className="notification-header">
                     <h3>Bildirimler</h3>
-                    <button className="notification-clear">Tümünü Temizle</button>
+                    <button onClick={clearNotifications} className="notification-clear">Tümünü Temizle</button>
                 </div>
                 <div className="notification-list">
-                    <div className="notification-item unread">
-                        <FontAwesomeIcon icon={faBell} className="notification-icon" />
-                        <div className="notification-content">
-                            <h4>Yeni Görev Atandı</h4>
-                            <p>Proje planlaması için yeni bir görev atandı.</p>
-                            <span className="notification-time">2 saat önce</span>
-                        </div>
-                    </div>
-                    <div className="notification-item">
-                        <FontAwesomeIcon icon={faEnvelope} className="notification-icon" />
-                        <div className="notification-content">
-                            <h4>Yeni Mesaj</h4>
-                            <p>Ahmet Bey'den yeni bir mesaj aldınız.</p>
-                            <span className="notification-time">5 saat önce</span>
-                        </div>
-                    </div>
-                    <div className="notification-item">
-                        <FontAwesomeIcon icon={faCalendar} className="notification-icon" />
-                        <div className="notification-content">
-                            <h4>Toplantı Hatırlatması</h4>
-                            <p>Yarın saat 14:00'te proje toplantısı var.</p>
-                            <span className="notification-time">1 gün önce</span>
-                        </div>
-                    </div>
+                    {notifications.length === 0 ? (
+                        <p>Bildirim yok</p>
+                    ) : (
+                        notifications.map(n => (
+                            <div key={n.id} className={`notification-item ${n.unread ? 'unread' : ''}`}>
+                                <FontAwesomeIcon icon={faEnvelope} className="notification-icon" />
+                                <div className="notification-content">
+                                    <h4>{n.title}</h4>
+                                    <p>{n.message}</p>
+                                    <span className="notification-time">{n.time}</span>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </div>

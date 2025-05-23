@@ -41,8 +41,8 @@ namespace TimeProject.Server.Controllers
 
             var user = new Model.User
             {
-                Name = registerDto.Name,
-                Surname = registerDto.Surname,
+                Name = registerDto.FirstName,
+                Surname = registerDto.LastName,
                 Email = registerDto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
                 PhoneNumber = registerDto.PhoneNumber,

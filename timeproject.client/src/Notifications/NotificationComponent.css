@@ -1,0 +1,176 @@
+/* src/components/Notifications/NotificationComponent.css */
+
+.notifications-wrapper {
+    position: relative;
+    margin-left: auto; /* Navbarda saða yaslamak için */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.notification-bell {
+    font-size: 1.5rem;
+    color: white;
+    position: relative;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+    .notification-bell:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff5722; /* Kýrmýzý bildirim sayýsý */
+    color: white;
+    border-radius: 50%;
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+}
+
+.notifications-panel {
+    position: absolute;
+    top: 55px; /* Navbar yüksekliðine göre ayarla */
+    right: 10px;
+    width: 320px; /* Geniþliði ayarla */
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000; /* Diðer her þeyin üzerinde olmasý için */
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh; /* Maksimum yükseklik */
+    overflow-y: auto; /* Gerekirse kaydýrma çubuðu çýksýn */
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #f7f7f7;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+    .panel-header h3 {
+        margin: 0;
+        color: #333;
+        font-size: 1.1rem;
+    }
+
+.clear-all-button {
+    background: none;
+    border: none;
+    color: #f44336;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s ease;
+}
+
+    .clear-all-button:hover {
+        color: #d32f2f;
+    }
+
+.notification-list {
+    padding: 10px;
+    flex-grow: 1;
+}
+
+.no-notifications {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+
+    .notification-item:hover {
+        background-color: #f9f9f9;
+    }
+
+.notification-icon {
+    font-size: 1.2rem;
+    color: #3f51b5; /* Mavi ikon */
+    margin-right: 10px;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-title {
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    color: #333;
+}
+
+.notification-message {
+    margin: 0;
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 5px;
+    display: block;
+}
+
+.notification-close-button {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+}
+
+    .notification-close-button:hover {
+        background-color: #ffebee;
+        color: #f44336;
+    }
+
+/* Responsive Düzenlemeler */
+@media (max-width: 768px) {
+    .notifications-panel {
+        width: 90%;
+        max-width: 350px;
+        right: 5%;
+        left: 5%;
+        top: 60px; /* Mobil navbar yüksekliðine göre ayarla */
+    }
+}

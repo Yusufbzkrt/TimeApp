@@ -287,7 +287,6 @@ C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\stat
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.TimeProject.Server.props
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.TimeProject.Server.props
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\TimeProj.50210D91.Up2Date
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\TimeProject.Server.dll
 C:\Users\yenimedya\Source\Repos\TimeApp\TimeProject.Server\obj\Debug\net8.0\refint\TimeProject.Server.dll

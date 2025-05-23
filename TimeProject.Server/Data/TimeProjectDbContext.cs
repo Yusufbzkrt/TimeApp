@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TimeProject.Models;
+using TimeProject.Server.Configurations;
 using TimeProject.Server.Model;
 using TimeProject.Server.Model.Configuration;
 
@@ -19,6 +21,7 @@ namespace TimeProject.Server.Data
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Blog> Blog { get; set; }
+        public DbSet<TaskModel> TaskModel { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +41,7 @@ namespace TimeProject.Server.Data
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskConfiguration());
         }
     }
 }

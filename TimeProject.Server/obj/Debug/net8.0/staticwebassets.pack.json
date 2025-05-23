@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\images\\HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg",
+      "PackagePath": "staticwebassets\\images\\HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg"
+    },
+    {
       "Id": "C:\\Users\\yenimedya\\Source\\Repos\\TimeApp\\TimeProject.Server\\wwwroot\\images\\default-user.jpg",
       "PackagePath": "staticwebassets\\images\\default-user.jpg"
     },

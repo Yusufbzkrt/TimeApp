@@ -3,6 +3,88 @@
   "ManifestType": "Build",
   "Endpoints": [
     {
+      "Route": "images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.brmcg3a6lx.jpg",
+      "AssetFile": "images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "28868"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 22 May 2025 13:45:39 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "brmcg3a6lx"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis="
+        },
+        {
+          "Name": "label",
+          "Value": "images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg"
+        }
+      ]
+    },
+    {
+      "Route": "images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg",
+      "AssetFile": "images/HD-wallpaper-among-us-karakter-among-us-art-beyaz-cizim-game-kirmizi-resim.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "28868"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 22 May 2025 13:45:39 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yeUn3HkxrFDN93p1VP1WP2hd0oalISCTdlKyET5THis="
+        }
+      ]
+    },
+    {
       "Route": "images/default-user.jpg",
       "AssetFile": "images/default-user.jpg",
       "Selectors": [],

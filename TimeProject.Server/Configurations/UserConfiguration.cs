@@ -14,7 +14,7 @@
             builder.Property(u => u.Surname).IsRequired().HasMaxLength(100);
             builder.Property(u => u.Email).IsRequired().HasMaxLength(255);
             builder.Property(u => u.PhoneNumber).HasMaxLength(15);
-            builder.Property(u => u.ImageUrl).HasMaxLength(500);
+            builder.Property(u => u.avatar).HasMaxLength(500);
             builder.Property(u => u.AccountStatusId).HasMaxLength(50);
 
             // Admin kullanıcısını ekleyelim
@@ -29,7 +29,7 @@
                     Email = "admin@example.com",
                     PasswordHash = passwordHash,
                     PhoneNumber = "1234567890",
-                    ImageUrl = "/images/mona.jpg",
+                    avatar = "/images/mona.jpg",
                     RoleId = 1, // Admin rolü
                     TestResult = false,
                     AccountStatusId = "Active",
@@ -43,7 +43,6 @@
                      Email = "mehmet@example.com",
                      PasswordHash = passwordHash,
                      PhoneNumber = "05537668452",
-                     ImageUrl = "/images/mona.jpg",
                      RoleId = 2, // Admin rolü
                      TestResult = false,
                      AccountStatusId = "Active",
@@ -57,7 +56,6 @@
                      Email = "ahmet@example.com",
                      PasswordHash = passwordHash,
                      PhoneNumber = "05528445566",
-                     ImageUrl = "/images/mona.jpg",
                      RoleId = 2, // Admin rolü
                      TestResult = false,
                      AccountStatusId = "Active",
