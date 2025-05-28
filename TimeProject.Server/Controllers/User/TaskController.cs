@@ -29,7 +29,7 @@ namespace TimeProject.Controllers.User
             {
                 var userId = int.Parse(User.FindFirst("UserID")?.Value);
                 var tasks = await _context.TaskModel
-                    .Where(t => t.CreatedByUserID == userId)
+                    .Where(t => t.UserId == userId)
                     .OrderBy(t => t.DueDate)
                     .Select(t => new TaskModel
                     {
@@ -39,11 +39,11 @@ namespace TimeProject.Controllers.User
                         DueDate = t.DueDate,
                         Priority = t.Priority,
                         Status = t.Status,
-                        CreatedByUserID = t.CreatedByUserID,
+                        UserId = t.UserId,
                         CreatedDate = t.CreatedDate,
                         UpdatedDate = t.UpdatedDate,
                         CreatedByUserName = _context.User
-                            .Where(u => u.UserId == t.CreatedByUserID)
+                            .Where(u => u.UserId == t.UserId)
                             .Select(u => u.Name)
                             .FirstOrDefault()
                     })
@@ -72,7 +72,7 @@ namespace TimeProject.Controllers.User
                     DueDate = task.DueDate,
                     Priority = task.Priority,
                     Status = task.Status ?? "pending",
-                    CreatedByUserID = userId,
+                    UserId = userId,
                     CreatedDate = DateTime.Now
                 };
 
@@ -95,7 +95,7 @@ namespace TimeProject.Controllers.User
             {
                 var userId = int.Parse(User.FindFirst("UserID")?.Value);
                 var existingTask = await _context.TaskModel
-                    .FirstOrDefaultAsync(t => t.TaskID == id && t.CreatedByUserID == userId);
+                    .FirstOrDefaultAsync(t => t.TaskID == id && t.UserId == userId);
 
                 if (existingTask == null)
                 {
@@ -127,7 +127,7 @@ namespace TimeProject.Controllers.User
             {
                 var userId = int.Parse(User.FindFirst("UserID")?.Value);
                 var task = await _context.TaskModel
-                    .FirstOrDefaultAsync(t => t.TaskID == id && t.CreatedByUserID == userId);
+                    .FirstOrDefaultAsync(t => t.TaskID == id && t.UserId == userId);
 
                 if (task == null)
                 {

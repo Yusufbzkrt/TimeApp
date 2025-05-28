@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeProject.Server.Data;
 
@@ -11,9 +12,11 @@ using TimeProject.Server.Data;
 namespace TimeProject.Server.Migrations
 {
     [DbContext(typeof(TimeProjectDbContext))]
-    partial class TimeProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250528082353_EventImage")]
+    partial class EventImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,9 +115,6 @@ namespace TimeProject.Server.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -178,7 +178,7 @@ namespace TimeProject.Server.Migrations
                     b.Property<string>("EventName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -410,10 +410,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 1,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 28, 16, 28, 3, 592, DateTimeKind.Local).AddTicks(5052),
+                            CreateDate = new DateTime(2025, 5, 28, 11, 23, 52, 945, DateTimeKind.Local).AddTicks(9499),
                             Email = "admin@example.com",
                             Name = "Yusuf",
-                            PasswordHash = "$2a$11$ejEOdduczDOgGgh8AhJdpehV396g2ljRMnXNClYRXw0X4dXf00bRm",
+                            PasswordHash = "$2a$11$0GOlxltZFMpRU3rzmjbXCeY44oJlpEOZT7lMewU5K2Zzrv/bGwtdG",
                             PhoneNumber = "1234567890",
                             RoleId = 1,
                             Surname = "Bozkurt",
@@ -424,10 +424,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 2,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 28, 16, 28, 3, 592, DateTimeKind.Local).AddTicks(5077),
+                            CreateDate = new DateTime(2025, 5, 28, 11, 23, 52, 945, DateTimeKind.Local).AddTicks(9523),
                             Email = "mehmet@example.com",
                             Name = "Mehmet",
-                            PasswordHash = "$2a$11$ejEOdduczDOgGgh8AhJdpehV396g2ljRMnXNClYRXw0X4dXf00bRm",
+                            PasswordHash = "$2a$11$0GOlxltZFMpRU3rzmjbXCeY44oJlpEOZT7lMewU5K2Zzrv/bGwtdG",
                             PhoneNumber = "05537668452",
                             RoleId = 2,
                             Surname = "Ali",
@@ -437,10 +437,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 3,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 28, 16, 28, 3, 592, DateTimeKind.Local).AddTicks(5080),
+                            CreateDate = new DateTime(2025, 5, 28, 11, 23, 52, 945, DateTimeKind.Local).AddTicks(9525),
                             Email = "ahmet@example.com",
                             Name = "ahmet",
-                            PasswordHash = "$2a$11$ejEOdduczDOgGgh8AhJdpehV396g2ljRMnXNClYRXw0X4dXf00bRm",
+                            PasswordHash = "$2a$11$0GOlxltZFMpRU3rzmjbXCeY44oJlpEOZT7lMewU5K2Zzrv/bGwtdG",
                             PhoneNumber = "05528445566",
                             RoleId = 2,
                             Surname = "can",

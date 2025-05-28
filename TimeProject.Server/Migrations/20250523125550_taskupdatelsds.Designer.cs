@@ -12,8 +12,8 @@ using TimeProject.Server.Data;
 namespace TimeProject.Server.Migrations
 {
     [DbContext(typeof(TimeProjectDbContext))]
-    [Migration("20250522145112_TaskTableaddedupdate")]
-    partial class TaskTableaddedupdate
+    [Migration("20250523125550_taskupdatelsds")]
+    partial class taskupdatelsds
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,53 +24,6 @@ namespace TimeProject.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("TimeProject.Models.TaskModel", b =>
-                {
-                    b.Property<int>("TaskID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskID"));
-
-                    b.Property<int>("CreatedByUserID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Priority")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("TaskName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("TaskID");
-
-                    b.HasIndex("CreatedByUserID");
-
-                    b.ToTable("TaskModel");
-                });
 
             modelBuilder.Entity("TimeProject.Server.Model.AccountStatus", b =>
                 {
@@ -198,12 +151,7 @@ namespace TimeProject.Server.Migrations
                     b.Property<int>("SenderUserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("MessagesId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Messages");
                 });
@@ -399,10 +347,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 1,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 22, 17, 51, 11, 222, DateTimeKind.Local).AddTicks(5176),
+                            CreateDate = new DateTime(2025, 5, 23, 15, 55, 50, 173, DateTimeKind.Local).AddTicks(2161),
                             Email = "admin@example.com",
                             Name = "Yusuf",
-                            PasswordHash = "$2a$11$9fN.wZ5.ssVhdG8GtW5OjuK4qbtaedXuZZLsFiYZMCpgZuSPOPz4K",
+                            PasswordHash = "$2a$11$EXYvTDV6DSNJE5qJgSvmJereMIYFPhQyDUYgcoCRTyZ8nRrBIQRA.",
                             PhoneNumber = "1234567890",
                             RoleId = 1,
                             Surname = "Bozkurt",
@@ -413,10 +361,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 2,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 22, 17, 51, 11, 222, DateTimeKind.Local).AddTicks(5348),
+                            CreateDate = new DateTime(2025, 5, 23, 15, 55, 50, 173, DateTimeKind.Local).AddTicks(2187),
                             Email = "mehmet@example.com",
                             Name = "Mehmet",
-                            PasswordHash = "$2a$11$9fN.wZ5.ssVhdG8GtW5OjuK4qbtaedXuZZLsFiYZMCpgZuSPOPz4K",
+                            PasswordHash = "$2a$11$EXYvTDV6DSNJE5qJgSvmJereMIYFPhQyDUYgcoCRTyZ8nRrBIQRA.",
                             PhoneNumber = "05537668452",
                             RoleId = 2,
                             Surname = "Ali",
@@ -426,26 +374,15 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 3,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 22, 17, 51, 11, 222, DateTimeKind.Local).AddTicks(5352),
+                            CreateDate = new DateTime(2025, 5, 23, 15, 55, 50, 173, DateTimeKind.Local).AddTicks(2189),
                             Email = "ahmet@example.com",
                             Name = "ahmet",
-                            PasswordHash = "$2a$11$9fN.wZ5.ssVhdG8GtW5OjuK4qbtaedXuZZLsFiYZMCpgZuSPOPz4K",
+                            PasswordHash = "$2a$11$EXYvTDV6DSNJE5qJgSvmJereMIYFPhQyDUYgcoCRTyZ8nRrBIQRA.",
                             PhoneNumber = "05528445566",
                             RoleId = 2,
                             Surname = "can",
                             TestResult = false
                         });
-                });
-
-            modelBuilder.Entity("TimeProject.Models.TaskModel", b =>
-                {
-                    b.HasOne("TimeProject.Server.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TimeProject.Server.Model.Credits", b =>
@@ -472,15 +409,6 @@ namespace TimeProject.Server.Migrations
                         .HasForeignKey("CreatedByUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TimeProject.Server.Model.Messages", b =>
-                {
-                    b.HasOne("TimeProject.Server.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

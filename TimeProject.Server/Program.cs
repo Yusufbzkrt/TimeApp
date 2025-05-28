@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using TimeProject.Server; // CustomUserIdProvider için namespace
+using TimeProject.Server;
 using TimeProject.Server.Data;
 using TimeProject.Server.Hubs;
 
@@ -24,27 +24,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.Zero
         };
 
-        // ****** BURAYA EKLEME YAPILIYOR ******
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
-                var accessToken = context.Request.Query["access_token"]; // Query string'den token'ı al
+                var accessToken = context.Request.Query["access_token"]; 
 
-                // Hub yolunuzu doğru kontrol edin
                 var path = context.HttpContext.Request.Path;
                 if (!string.IsNullOrEmpty(accessToken) &&
-                    (path.StartsWithSegments("/messageHub"))) // '/messageHub' yolu için token'ı yakala
+                    (path.StartsWithSegments("/messageHub"))) 
                 {
                     context.Token = accessToken;
                 }
                 return Task.CompletedTask;
             }
         };
-        // ************************************
     });
 
-builder.Services.AddAuthorization(); // Authorization'ı ekleyin
+builder.Services.AddAuthorization(); 
 
 // Servislerin eklenmesi
 builder.Services.AddDbContext<TimeProjectDbContext>(options =>
@@ -68,16 +65,23 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("https://localhost:5173") // React frontend URL'niz
+        policy.WithOrigins("https://localhost:5173") 
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials();  // Credentials (cookies veya token) desteği
+              .AllowCredentials();  
     });
+});
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();
 
-// Middleware sırası
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -92,14 +96,13 @@ app.UseRouting();
 // CORS Middleware
 app.UseCors("AllowSpecificOrigin");
 
-app.UseAuthentication(); // Kimlik doğrulamayı etkinleştir
-app.UseAuthorization();  // Yetkilendirmeyi etkinleştir
+app.UseSession();
 
-// ****** BURADA DÜZELTME YAPILIYOR ******
-// ASP.NET Core 6+ için doğru kullanım:
+app.UseAuthentication(); 
+app.UseAuthorization();  
+
 app.MapControllers();
-app.MapHub<MessageHub>("/messageHub"); // Hub'ı eşleştir
-// ************************************
+app.MapHub<MessageHub>("/messageHub"); 
 
 app.MapFallbackToFile("/index.html");
 

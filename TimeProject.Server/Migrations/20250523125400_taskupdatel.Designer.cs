@@ -12,8 +12,8 @@ using TimeProject.Server.Data;
 namespace TimeProject.Server.Migrations
 {
     [DbContext(typeof(TimeProjectDbContext))]
-    [Migration("20250522145737_TaskTableuploadthree")]
-    partial class TaskTableuploadthree
+    [Migration("20250523125400_taskupdatel")]
+    partial class taskupdatel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,9 +32,6 @@ namespace TimeProject.Server.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskID"));
-
-                    b.Property<int>("CreatedByUserID")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -65,9 +62,12 @@ namespace TimeProject.Server.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("TaskID");
 
-                    b.HasIndex("CreatedByUserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("TaskModel");
 
@@ -75,13 +75,13 @@ namespace TimeProject.Server.Migrations
                         new
                         {
                             TaskID = 1,
-                            CreatedByUserID = 8,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Ödevi yap",
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Priority = "Normal",
                             Status = "pending",
-                            TaskName = "Ödev"
+                            TaskName = "Ödev",
+                            UserId = 8
                         });
                 });
 
@@ -211,12 +211,7 @@ namespace TimeProject.Server.Migrations
                     b.Property<int>("SenderUserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("MessagesId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Messages");
                 });
@@ -412,10 +407,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 1,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 22, 17, 57, 36, 299, DateTimeKind.Local).AddTicks(9842),
+                            CreateDate = new DateTime(2025, 5, 23, 15, 54, 0, 102, DateTimeKind.Local).AddTicks(8131),
                             Email = "admin@example.com",
                             Name = "Yusuf",
-                            PasswordHash = "$2a$11$WMqUBW6tOIgKlywXVIeD2.Qs8/as7qMPJMc/mM6PydqxYzq8FEfSy",
+                            PasswordHash = "$2a$11$lsPGLPj6eABAX4ep2ysrrOyLtewXb6ycc8nXJ9P6EyXgfowwv545u",
                             PhoneNumber = "1234567890",
                             RoleId = 1,
                             Surname = "Bozkurt",
@@ -426,10 +421,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 2,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 22, 17, 57, 36, 299, DateTimeKind.Local).AddTicks(9901),
+                            CreateDate = new DateTime(2025, 5, 23, 15, 54, 0, 102, DateTimeKind.Local).AddTicks(8156),
                             Email = "mehmet@example.com",
                             Name = "Mehmet",
-                            PasswordHash = "$2a$11$WMqUBW6tOIgKlywXVIeD2.Qs8/as7qMPJMc/mM6PydqxYzq8FEfSy",
+                            PasswordHash = "$2a$11$lsPGLPj6eABAX4ep2ysrrOyLtewXb6ycc8nXJ9P6EyXgfowwv545u",
                             PhoneNumber = "05537668452",
                             RoleId = 2,
                             Surname = "Ali",
@@ -439,10 +434,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 3,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 22, 17, 57, 36, 299, DateTimeKind.Local).AddTicks(9904),
+                            CreateDate = new DateTime(2025, 5, 23, 15, 54, 0, 102, DateTimeKind.Local).AddTicks(8158),
                             Email = "ahmet@example.com",
                             Name = "ahmet",
-                            PasswordHash = "$2a$11$WMqUBW6tOIgKlywXVIeD2.Qs8/as7qMPJMc/mM6PydqxYzq8FEfSy",
+                            PasswordHash = "$2a$11$lsPGLPj6eABAX4ep2ysrrOyLtewXb6ycc8nXJ9P6EyXgfowwv545u",
                             PhoneNumber = "05528445566",
                             RoleId = 2,
                             Surname = "can",
@@ -454,7 +449,7 @@ namespace TimeProject.Server.Migrations
                 {
                     b.HasOne("TimeProject.Server.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("CreatedByUserID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -485,15 +480,6 @@ namespace TimeProject.Server.Migrations
                         .HasForeignKey("CreatedByUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TimeProject.Server.Model.Messages", b =>
-                {
-                    b.HasOne("TimeProject.Server.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

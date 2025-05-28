@@ -6,70 +6,66 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TimeProject.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class TaskTableuploadthree : Migration
+    public partial class EventImage : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.UpdateData(
-                table: "TaskModel",
-                keyColumn: "TaskID",
-                keyValue: 1,
-                column: "CreatedByUserID",
-                value: 8);
+            migrationBuilder.AddColumn<string>(
+                name: "ImageUrl",
+                table: "Events",
+                type: "nvarchar(max)",
+                nullable: true);
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 1,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 57, 36, 299, DateTimeKind.Local).AddTicks(9842), "$2a$11$WMqUBW6tOIgKlywXVIeD2.Qs8/as7qMPJMc/mM6PydqxYzq8FEfSy" });
+                values: new object[] { new DateTime(2025, 5, 28, 11, 23, 52, 945, DateTimeKind.Local).AddTicks(9499), "$2a$11$0GOlxltZFMpRU3rzmjbXCeY44oJlpEOZT7lMewU5K2Zzrv/bGwtdG" });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 2,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 57, 36, 299, DateTimeKind.Local).AddTicks(9901), "$2a$11$WMqUBW6tOIgKlywXVIeD2.Qs8/as7qMPJMc/mM6PydqxYzq8FEfSy" });
+                values: new object[] { new DateTime(2025, 5, 28, 11, 23, 52, 945, DateTimeKind.Local).AddTicks(9523), "$2a$11$0GOlxltZFMpRU3rzmjbXCeY44oJlpEOZT7lMewU5K2Zzrv/bGwtdG" });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 3,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 57, 36, 299, DateTimeKind.Local).AddTicks(9904), "$2a$11$WMqUBW6tOIgKlywXVIeD2.Qs8/as7qMPJMc/mM6PydqxYzq8FEfSy" });
+                values: new object[] { new DateTime(2025, 5, 28, 11, 23, 52, 945, DateTimeKind.Local).AddTicks(9525), "$2a$11$0GOlxltZFMpRU3rzmjbXCeY44oJlpEOZT7lMewU5K2Zzrv/bGwtdG" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.UpdateData(
-                table: "TaskModel",
-                keyColumn: "TaskID",
-                keyValue: 1,
-                column: "CreatedByUserID",
-                value: 0);
+            migrationBuilder.DropColumn(
+                name: "ImageUrl",
+                table: "Events");
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 1,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 55, 54, 87, DateTimeKind.Local).AddTicks(8783), "$2a$11$TFqR4poX.Nw5EWvg3.M4hu4.NgstHIJlcWQSAYqd.l.YNHqFp8xGa" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 59, 6, 272, DateTimeKind.Local).AddTicks(5515), "$2a$11$5zbQsYf62pvBrVbGxvMg7ehd49pkFoW5lqi.VcKjgZkAo4Dd3ET9K" });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 2,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 55, 54, 87, DateTimeKind.Local).AddTicks(8845), "$2a$11$TFqR4poX.Nw5EWvg3.M4hu4.NgstHIJlcWQSAYqd.l.YNHqFp8xGa" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 59, 6, 272, DateTimeKind.Local).AddTicks(5540), "$2a$11$5zbQsYf62pvBrVbGxvMg7ehd49pkFoW5lqi.VcKjgZkAo4Dd3ET9K" });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 3,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 55, 54, 87, DateTimeKind.Local).AddTicks(8848), "$2a$11$TFqR4poX.Nw5EWvg3.M4hu4.NgstHIJlcWQSAYqd.l.YNHqFp8xGa" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 59, 6, 272, DateTimeKind.Local).AddTicks(5542), "$2a$11$5zbQsYf62pvBrVbGxvMg7ehd49pkFoW5lqi.VcKjgZkAo4Dd3ET9K" });
         }
     }
 }

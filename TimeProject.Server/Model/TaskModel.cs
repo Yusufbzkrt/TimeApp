@@ -24,14 +24,14 @@ namespace TimeProject.Models
         [StringLength(20)]
         public string Status { get; set; } // pending, completed
 
-        public int CreatedByUserID { get; set; }
+        public int UserId { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
 
         // Navigation property
-        [ForeignKey("CreatedByUserID")]
+        [ForeignKey("UserId")]
         public virtual User User { get; set; }
 
         // Not mapped property for API responses

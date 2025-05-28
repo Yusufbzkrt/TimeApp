@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TimeProject.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class TaskTableadded : Migration
+    public partial class taskupdatelsdsa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,7 @@ namespace TimeProject.Server.Migrations
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Priority = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CreatedByUserID = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -30,38 +30,43 @@ namespace TimeProject.Server.Migrations
                 {
                     table.PrimaryKey("PK_TaskModel", x => x.TaskID);
                     table.ForeignKey(
-                        name: "FK_TaskModel_User_CreatedByUserID",
-                        column: x => x.CreatedByUserID,
+                        name: "FK_TaskModel_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "TaskModel",
+                columns: new[] { "TaskID", "CreatedDate", "Description", "DueDate", "Priority", "Status", "TaskName", "UpdatedDate", "UserId" },
+                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ödevi yap", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Normal", "pending", "Ödev", null, 8 });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 1,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 29, 25, 155, DateTimeKind.Local).AddTicks(247), "$2a$11$QBJ6A1vw3GUFuDTkX03bmetmsMwT5RPEFOFo/2hXorxaejm/EDIwO" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 59, 6, 272, DateTimeKind.Local).AddTicks(5515), "$2a$11$5zbQsYf62pvBrVbGxvMg7ehd49pkFoW5lqi.VcKjgZkAo4Dd3ET9K" });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 2,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 29, 25, 155, DateTimeKind.Local).AddTicks(298), "$2a$11$QBJ6A1vw3GUFuDTkX03bmetmsMwT5RPEFOFo/2hXorxaejm/EDIwO" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 59, 6, 272, DateTimeKind.Local).AddTicks(5540), "$2a$11$5zbQsYf62pvBrVbGxvMg7ehd49pkFoW5lqi.VcKjgZkAo4Dd3ET9K" });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 3,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 22, 17, 29, 25, 155, DateTimeKind.Local).AddTicks(301), "$2a$11$QBJ6A1vw3GUFuDTkX03bmetmsMwT5RPEFOFo/2hXorxaejm/EDIwO" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 59, 6, 272, DateTimeKind.Local).AddTicks(5542), "$2a$11$5zbQsYf62pvBrVbGxvMg7ehd49pkFoW5lqi.VcKjgZkAo4Dd3ET9K" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskModel_CreatedByUserID",
+                name: "IX_TaskModel_UserId",
                 table: "TaskModel",
-                column: "CreatedByUserID");
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -75,21 +80,21 @@ namespace TimeProject.Server.Migrations
                 keyColumn: "UserId",
                 keyValue: 1,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 21, 15, 12, 27, 521, DateTimeKind.Local).AddTicks(2071), "$2a$11$h6IYR9P8sKXoF.ljfe0tKuQP7pFRFHz3bKunLEk7hlGjqkFRsB.dK" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 55, 50, 173, DateTimeKind.Local).AddTicks(2161), "$2a$11$EXYvTDV6DSNJE5qJgSvmJereMIYFPhQyDUYgcoCRTyZ8nRrBIQRA." });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 2,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 21, 15, 12, 27, 521, DateTimeKind.Local).AddTicks(2096), "$2a$11$h6IYR9P8sKXoF.ljfe0tKuQP7pFRFHz3bKunLEk7hlGjqkFRsB.dK" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 55, 50, 173, DateTimeKind.Local).AddTicks(2187), "$2a$11$EXYvTDV6DSNJE5qJgSvmJereMIYFPhQyDUYgcoCRTyZ8nRrBIQRA." });
 
             migrationBuilder.UpdateData(
                 table: "User",
                 keyColumn: "UserId",
                 keyValue: 3,
                 columns: new[] { "CreateDate", "PasswordHash" },
-                values: new object[] { new DateTime(2025, 5, 21, 15, 12, 27, 521, DateTimeKind.Local).AddTicks(2098), "$2a$11$h6IYR9P8sKXoF.ljfe0tKuQP7pFRFHz3bKunLEk7hlGjqkFRsB.dK" });
+                values: new object[] { new DateTime(2025, 5, 23, 15, 55, 50, 173, DateTimeKind.Local).AddTicks(2189), "$2a$11$EXYvTDV6DSNJE5qJgSvmJereMIYFPhQyDUYgcoCRTyZ8nRrBIQRA." });
         }
     }
 }

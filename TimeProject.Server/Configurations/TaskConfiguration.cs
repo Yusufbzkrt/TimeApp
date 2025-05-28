@@ -10,7 +10,7 @@ namespace TimeProject.Server.Configurations
         public void Configure(EntityTypeBuilder<TaskModel> builder)
         {
             builder.HasData(
-                new TaskModel { TaskID = 1, TaskName = "Ödev", Description="Ödevi yap", Priority="Normal", Status = "pending", CreatedByUserID=8 }
+                new TaskModel { TaskID = 1, TaskName = "Ödev", Description="Ödevi yap", Priority="Normal", Status = "pending", UserId=8 }
             );
         }
     }

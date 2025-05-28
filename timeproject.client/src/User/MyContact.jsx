@@ -1,6 +1,16 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './MyContact.css';  // CSS dosyasını import edin
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+    faUser, 
+    faEnvelope, 
+    faPhone, 
+    faEdit, 
+    faCamera,
+    faSpinner,
+    faExclamationCircle
+} from '@fortawesome/free-solid-svg-icons';
+import './MyContact.css';
 
 const MyContact = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -37,51 +47,71 @@ const MyContact = () => {
 
     if (loading) {
         return (
-            <div className="loading-spinner">
-                Yükleniyor...
+            <div className="loading-container">
+                <FontAwesomeIcon icon={faSpinner} spin size="2x" />
+                <p>Yükleniyor...</p>
             </div>
         );
     }
 
     if (!userInfo) {
-        return <div className="error-message">Bilgiler yüklenemedi</div>;
+        return (
+            <div className="error-container">
+                <FontAwesomeIcon icon={faExclamationCircle} size="2x" />
+                <p>Bilgiler yüklenemedi</p>
+            </div>
+        );
     }
 
     return (
         <div className="my-contact-container">
             <div className="my-contact-header">
-                <h2>Kullanıcı Bilgileri</h2>
+                <h2>Profil Bilgilerim</h2>
             </div>
             <div className="my-contact-content">
+                <div className="profile-image-container">
+                    {userInfo.avatar ? (
+                        <img
+                            src={`https://localhost:7120${userInfo.avatar}`}
+                            alt="Profile"
+                            className="profile-image"
+                        />
+                    ) : (
+                        <div className="profile-image-placeholder">
+                            <FontAwesomeIcon icon={faUser} size="3x" />
+                        </div>
+                    )}
+                </div>
+
                 <div className="my-contact-info">
-                    <div className="my-contact-info">
-                        {userInfo.imageUrl && (() => {
-                            const imageUrl = `https://localhost:7120${userInfo.imageUrl}`;
-                            console.log("Resim URL:", imageUrl); // Konsola yazdır
-                            return (
-                                <img
-                                    src={imageUrl}
-                                    alt="Profile"
-                                    className="profile-image"
-                                />
-                            );
-                        })()}
+                    <div className="info-item">
+                        <FontAwesomeIcon icon={faUser} className="info-icon" />
+                        <div className="info-content">
+                            <span className="info-label">Ad Soyad</span>
+                            <span className="info-value">{userInfo.name} {userInfo.surname}</span>
+                        </div>
                     </div>
 
+                    <div className="info-item">
+                        <FontAwesomeIcon icon={faEnvelope} className="info-icon" />
+                        <div className="info-content">
+                            <span className="info-label">E-posta</span>
+                            <span className="info-value">{userInfo.email}</span>
+                        </div>
+                    </div>
 
-                    <p><strong>Ad:</strong> {userInfo.name} { }</p>
-                    <p><strong>Soyad:</strong> {userInfo.surname}</p>
-                    <p><strong>Email:</strong> {userInfo.email}</p>
-                    <p><strong>Telefon:</strong> {userInfo.phoneNumber}</p>
-                    
+                    <div className="info-item">
+                        <FontAwesomeIcon icon={faPhone} className="info-icon" />
+                        <div className="info-content">
+                            <span className="info-label">Telefon</span>
+                            <span className="info-value">{userInfo.phoneNumber}</span>
+                        </div>
+                    </div>
                 </div>
-                {/* Düzenle Butonu */}
+
                 <button className="edit-button" onClick={handleEditClick}>
-                    Düzenle
+                    <FontAwesomeIcon icon={faEdit} /> Bilgileri Düzenle
                 </button>
-            </div>
-            <div className="my-contact-footer">
-                <p>© 2025 MyCompany</p>
             </div>
         </div>
     );

@@ -19,6 +19,7 @@ import MessageComponent from "./Messages/MessageComponent";
 import { NotificationProvider } from './Notifications/NotificationContext';
 import Calendar from './User/calendar';
 import Task from './User/Task';
+import MyBlogEdit from './User/MyBlogEdit';
 
 function App() {
     return (
@@ -42,17 +43,17 @@ function App() {
                 {/* Mesaj gönderme sayfası */}
                 <Route path="/about" element={<About />} />
 
-                <Route path="mycontactedit" element={<MyContactEdit />} />
+                    <Route path="mycontactedit" element={<MyContactEdit />} />
 
                 <Route path="/user" element={<UserLayout />}>
                     <Route path="/user/home" element={<UserHomePage />} />
                     <Route path="/user/blog" element={<MyBlog />} />
+                    <Route path="/user/blog/edit/:blogId" element={<MyBlogEdit />} />
                     <Route path="/user/iletisim" element={<MyContact />} />
                     <Route path="/user/yardim" element={<MyHelp />} />
                     <Route path="myservices" element={<MyServices />} />
                     <Route path="/user/etkinlikler" element={<Etkinlikler />} />
                     <Route path="/user/etkinlikler/duzenle/:eventsId" element={<EditEtkinlik />} />
-                   
                 </Route>
             </Routes>
             </Router>

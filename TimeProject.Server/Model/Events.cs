@@ -9,5 +9,7 @@
         public int CreatedByUserID { get; set; }//Etkinliği oluşturan kullanıcı
         public User? User { get; set; }
         public bool IsActive { get; set; }
+        public string? Image { get; set; }
     }
 }
+ 

@@ -39,6 +39,15 @@ namespace TimeProject.Server.Data
                 .WithMany(u => u.Events)
                 .HasForeignKey(e => e.CreatedByUserID);
 
+            modelBuilder.Entity<TaskModel>()
+    .HasOne(t => t.User)
+    .WithMany() // Eğer User sınıfında ICollection<TaskModel> Tasks yoksa
+    .HasForeignKey(t => t.UserId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new TaskConfiguration());

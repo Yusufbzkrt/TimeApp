@@ -1,113 +1,224 @@
 /* MyContactEdit sayfası için özel stil */
 .my-contact-edit-container {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
+    max-width: 800px;
+    margin: 100px auto 40px;
     padding: 40px;
-    margin-top: 80px; /* Navbar'ın hemen altında başlayacak */
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .my-contact-edit-header {
     text-align: center;
-    margin-bottom: 30px;
-    color: #4CAF50;
+    margin-bottom: 40px;
 }
 
 .my-contact-edit-header h2 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #4CAF50;
-}
-
-.my-contact-edit-content {
-    background-color: white;
-    border: 1px solid #ddd;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .my-contact-edit-form {
     display: flex;
     flex-direction: column;
+    gap: 30px;
+}
+
+.profile-image-edit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
 }
 
-.my-contact-edit-form input {
-    padding: 12px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.my-contact-edit-form input:focus {
-    border-color: #4CAF50;
-}
-
-.my-contact-edit-footer {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 1rem;
-    color: #777;
-}
-
-/* Yükleniyor göstergesi */
-.loading-spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    color: #4CAF50;
-}
-
-.loading-spinner:before {
-    content: "";
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #4CAF50;
+.profile-image-container {
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
+    overflow: hidden;
+    border: 4px solid #f3f4f6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-/* Bilgiler yüklenemedi hatası */
-.error-message {
+.profile-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+}
+
+.image-upload-container {
     text-align: center;
-    font-size: 1.2rem;
-    color: red;
+}
+
+.image-upload-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #f3f4f6;
+    color: #6366f1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.image-upload-label:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+}
+
+.image-upload-input {
+    display: none;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4b5563;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.form-group label svg {
+    color: #6366f1;
+}
+
+.form-group input {
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #6366f1;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #9ca3af;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 15px;
     margin-top: 20px;
 }
 
-/* Güncelle butonu */
-.save-button {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: white;
-    border: none;
+.save-button, .cancel-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: 100%;
-    margin-top: 20px;
+    flex: 1;
+}
+
+.save-button {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
 }
 
 .save-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.cancel-button {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: none;
+}
+
+.cancel-button:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+}
+
+.loading-container, .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 200px;
+    color: #6366f1;
+}
+
+.error-container {
+    color: #ef4444;
+}
+
+.loading-container p, .error-container p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .my-contact-edit-container {
+        margin: 80px 20px 30px;
+        padding: 30px 20px;
+    }
+
+    .my-contact-edit-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-image-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+    .save-button, .cancel-button {
+        width: 100%;
+    }
 }

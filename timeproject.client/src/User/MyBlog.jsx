@@ -1,30 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+    faBlog, 
+    faPlus, 
+    faEdit, 
+    faTrash, 
+    faSpinner,
+    faExclamationCircle,
+    faCalendarAlt,
+    faPaperPlane,
+    faImage,
+    faUpload,
+    faEye,
+    faTimes,
+    faSearch,
+    faFilter
+} from '@fortawesome/free-solid-svg-icons';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import "./MyBlog.css";
 
 const MyBlog = () => {
     const [blogs, setBlogs] = useState([]);
-    const [form, setForm] = useState({ title: '', content: '' });
+    const [form, setForm] = useState({ 
+        title: '', 
+        content: '', 
+        image: null 
+    });
+    const [imagePreview, setImagePreview] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [selectedBlog, setSelectedBlog] = useState(null);
+    const [showForm, setShowForm] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
-    // Bloglarý çek
+
+    // Quill editÃ¶r modÃ¼lleri ve formatlarÄ±
+    const modules = {
+        toolbar: [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'color': [] }, { 'background': [] }],
+            ['link', 'image'],
+            ['clean']
+        ],
+    };
+
+    const formats = [
+        'header',
+        'bold', 'italic', 'underline', 'strike',
+        'list', 'bullet',
+        'color', 'background',
+        'link', 'image'
+    ];
+
     const fetchBlogs = async () => {
         try {
+            setLoading(true);
             const res = await fetch(`https://localhost:7120/api/User/GetBlog`);
             const data = await res.json();
             setBlogs(data);
+            setError(null);
         } catch (err) {
-            console.error('Bloglarý çekerken hata:', err);
+            console.error('Bloglar Ã§ekerken hata:', err);
+            setError('Bloglar yÃ¼klenirken bir hata oluÅŸtu.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Sayfa yüklendiðinde bloglarý getir
     useEffect(() => {
         fetchBlogs();
     }, []);
 
     const handleDelete = async (blogId) => {
         if (!blogId) {
-            alert('Geçersiz blog ID');
+            alert('GeÃ§ersiz blog ID');
+            return;
+        }
+
+        if (!window.confirm('Bu blog yazÄ±sÄ±nÄ± silmek istediÄŸinizden emin misiniz?')) {
             return;
         }
 
@@ -33,96 +90,284 @@ const MyBlog = () => {
                 method: 'DELETE',
             });
 
-            const data = await res.json(); // Hata mesajýný almak için JSON olarak parse et
+            const data = await res.json();
 
             if (res.ok) {
-                fetchBlogs(); // Silme iþleminden sonra bloglarý tekrar çek
-                alert(data.message); // API'den gelen baþarýlý mesaj
+                fetchBlogs();
+                alert(data.message);
             } else {
-                alert(data.message || 'Blog silinirken bir hata oluþtu.'); // Hata mesajý
+                alert(data.message || 'Blog silinirken bir hata oluÅŸtu.');
             }
         } catch (err) {
-            console.error('Silme hatasý:', err);
-            alert('Bir hata oluþtu.');
+            console.error('Silme hatasÄ±:', err);
+            alert('Bir hata oluÅŸtu.');
         }
     };
 
-
-    // Güncelleme iþlemi
     const handleEdit = (blog) => {
-        navigate(`/MyBlogEdit/${blog.blogId}`);
-
+        navigate(`/user/blog/edit/${blog.blogId}`);
     };
 
-    // Blog gönder
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setForm(prev => ({ ...prev, image: file }));
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('https://localhost:7120/api/User/BlogAdd', {
+            const formData = new FormData();
+            formData.append("Title", form.title);
+            formData.append("Content", form.content);
+            if (form.image) {
+                formData.append("Image", form.image);
+            }
+
+            const res = await fetch('https://localhost:7120/api/Blog/add', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                },
+                body: formData,
             });
 
             if (res.ok) {
-                setForm({ title: '', content: '' });
-                fetchBlogs(); // Listeyi güncelle
+                setForm({ title: '', content: '', image: null });
+                setImagePreview(null);
+                setShowForm(false);
+                fetchBlogs();
             } else {
                 console.error('Blog eklenemedi');
             }
         } catch (err) {
-            console.error('Blog ekleme hatasý:', err);
+            console.error('Blog ekleme hatasÄ±:', err);
         }
     };
+
+    const handlePreview = (blog) => {
+        setSelectedBlog(blog);
+    };
+
+    const closePreview = () => {
+        setSelectedBlog(null);
+    };
+
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <FontAwesomeIcon icon={faSpinner} spin size="2x" />
+                <p>Bloglar yÃ¼kleniyor...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="error-container">
+                <FontAwesomeIcon icon={faExclamationCircle} size="2x" />
+                <p>{error}</p>
+            </div>
+        );
+    }
 
     return (
         <div className="my-blog-container">
             <div className="my-blog-header">
-                <h1>My Blog</h1>
+                <FontAwesomeIcon icon={faBlog} className="header-icon" />
+                <h1>Blog YazÄ±larÄ±m</h1>
+                <p className="welcome-text">
+                    DÃ¼ÅŸÃ¼ncelerinizi ve deneyimlerinizi paylaÅŸÄ±n. Yeni bir blog yazÄ±sÄ± ekleyerek baÅŸlayÄ±n!
+                </p>
             </div>
 
-            <form className="blog-form" onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Baþlýk"
-                    value={form.title}
-                    onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    required
-                />
-                <textarea
-                    placeholder="Ýçerik"
-                    value={form.content}
-                    onChange={(e) => setForm({ ...form, content: e.target.value })}
-                    required
-                ></textarea>
-                <button type="submit">Blogu Ekle</button>
-            </form>
-
-            <div className="blog-list">
-                <h2>Bloglar</h2>
-                {blogs.map((blog, index) => (
-                    <div key={index} className="blog-item">
-                        <h3>{blog.title}</h3>
-                        <p>{blog.content}</p>
-                        <small>{new Date(blog.date).toLocaleString()}</small>
-
-                        {/* Silme ve Güncelleme Butonlarý */}
-                        <div className="button-container">
-                            <button className="delete-button" onClick={() => handleDelete(blog.blogId)}>
-                                Sil
-
+            <div className="blog-controls">
+                <div className="search-filter">
+                    <div className="search-box">
+                        <FontAwesomeIcon icon={faSearch} />
+                        <input
+                            type="text"
+                            placeholder="Blog ara..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                </div>
+                <br></br>
+                <button 
+                    className="add-blog-button"
+                    onClick={() => setShowForm(!showForm)}
+                >
+                    <FontAwesomeIcon icon={faPlus} />
+                    <span>Yeni Blog</span>
+                </button>
+            </div>
+            <br></br>
+            {showForm && (
+                <div className="blog-form">
+                    <div className="form-header">
+                        <h2>Yeni Blog YazÄ±sÄ±</h2>
+                        <button type="button" className="close-button" onClick={() => setShowForm(false)}>Ã—</button>
+                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>Blog BaÅŸlÄ±ÄŸÄ±</label>
+                            <input
+                                type="text"
+                                placeholder="Blog baÅŸlÄ±ÄŸÄ±nÄ± girin"
+                                value={form.title}
+                                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Blog Ä°Ã§eriÄŸi</label>
+                            <div className="quill-editor">
+                                <ReactQuill
+                                    theme="snow"
+                                    value={form.content}
+                                    onChange={(content) => setForm({ ...form, content })}
+                                    modules={modules}
+                                    formats={formats}
+                                    placeholder="Blog iÃ§eriÄŸini girin..."
+                                />
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label>
+                                <FontAwesomeIcon icon={faImage} /> Blog GÃ¶rseli
+                            </label>
+                            <div className="image-upload">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    id="blog-image"
+                                    className="image-input"
+                                />
+                                <label htmlFor="blog-image" className="image-upload-label">
+                                    <FontAwesomeIcon icon={faImage} />
+                                    <span>GÃ¶rsel SeÃ§</span>
+                                </label>
+                            </div>
+                            {imagePreview && (
+                                <div className="image-preview">
+                                    <img src={imagePreview} alt="Blog gÃ¶rseli" />
+                                    <button 
+                                        type="button" 
+                                        className="remove-image"
+                                        onClick={() => {
+                                            setImagePreview(null);
+                                            setForm({ ...form, image: null });
+                                        }}
+                                    >
+                                        <FontAwesomeIcon icon={faTimes} />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        <div className="form-buttons">
+                            <button type="submit" className="submit-button">
+                                <FontAwesomeIcon icon={faPlus} /> Blog YayÄ±nla
                             </button>
-                            <button className="edit-button" onClick={() => handleEdit(blog)}>
-                                Güncelle
+                            <button type="button" className="cancel-button" onClick={() => setShowForm(false)}>
+                                Ä°ptal
                             </button>
                         </div>
+                    </form>
+                </div>
+            )}
+
+            <div className="blog-list">
+                <div className="section-header">
+                    <FontAwesomeIcon icon={faBlog} className="section-icon" />
+                    <h2>Blog YazÄ±larÄ±m</h2>
+                </div>
+                
+                {blogs.length === 0 ? (
+                    <div className="no-blogs">
+                        <p>HenÃ¼z blog yazÄ±nÄ±z bulunmuyor.</p>
                     </div>
-                ))}
+                ) : (
+                    <div className="blog-grid">
+                        {blogs.map((blog, index) => (
+                            <div key={index} className="blog-card">
+                                {blog.imageUrl && (
+                                    <div className="blog-image">
+                                        <img src={`https://localhost:7120${blog.imageUrl}`} alt={blog.title} />
+                                    </div>
+                                )}
+                                <div className="blog-card-header">
+                                    <h3>{blog.title}</h3>
+                                    <div className="blog-date">
+                                        <FontAwesomeIcon icon={faCalendarAlt} />
+                                        <span>{new Date(blog.date).toLocaleString()}</span>
+                                    </div>
+                                </div>
+                                <div className="blog-content">
+                                    <p>{blog.content.length > 150 ? `${blog.content.substring(0, 150)}...` : blog.content}</p>
+                                </div>
+                                <div className="blog-actions">
+                                    <button 
+                                        className="preview-button" 
+                                        onClick={() => handlePreview(blog)}
+                                    >
+                                        <FontAwesomeIcon icon={faEye} />
+                                        <span>Ã–nizle</span>
+                                    </button>
+                                    <button 
+                                        className="edit-button" 
+                                        onClick={() => handleEdit(blog)}
+                                    >
+                                        <FontAwesomeIcon icon={faEdit} />
+                                        <span>DÃ¼zenle</span>
+                                    </button>
+                                    <button 
+                                        className="delete-button" 
+                                        onClick={() => handleDelete(blog.blogId)}
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                        <span>Sil</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
+            {selectedBlog && (
+                <div className="preview-modal">
+                    <div className="preview-modal-content">
+                        <button className="close-modal" onClick={closePreview}>
+                            <FontAwesomeIcon icon={faTimes} />
+                        </button>
+                        {selectedBlog.imageUrl && (
+                            <div className="preview-image">
+                                <img src={`https://localhost:7120${selectedBlog.imageUrl}`} alt={selectedBlog.title} />
+                            </div>
+                        )}
+                        <div className="preview-header">
+                            <h2>{selectedBlog.title}</h2>
+                            <div className="preview-date">
+                                <FontAwesomeIcon icon={faCalendarAlt} />
+                                <span>{new Date(selectedBlog.date).toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <div className="preview-body">
+                            <p>{selectedBlog.content}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
-
 };
 
 export default MyBlog;
