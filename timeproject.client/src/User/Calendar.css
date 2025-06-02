@@ -1,11 +1,11 @@
 /* Takvim Container */
 .calendar-container {
-    padding: 20px;
+    padding: 50px;
     background: #ffffff;
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     margin: 20px;
-    height: calc(100vh - 40px);
+    height: calc(100vh - 100px);
     display: flex;
     flex-direction: column;
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeProject.Server.Data;
 
@@ -11,9 +12,11 @@ using TimeProject.Server.Data;
 namespace TimeProject.Server.Migrations
 {
     [DbContext(typeof(TimeProjectDbContext))]
-    partial class TimeProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250529111307_eventsaddedLocation")]
+    partial class eventsaddedLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,33 +161,6 @@ namespace TimeProject.Server.Migrations
                     b.ToTable("Credits");
                 });
 
-            modelBuilder.Entity("TimeProject.Server.Model.EventParticipant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("EventParticipants");
-                });
-
             modelBuilder.Entity("TimeProject.Server.Model.Events", b =>
                 {
                     b.Property<int>("EventsId")
@@ -193,13 +169,7 @@ namespace TimeProject.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventsId"));
 
-                    b.Property<int>("Capacity")
-                        .HasColumnType("int");
-
                     b.Property<int>("CreatedByUserID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CurrentParticipants")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateTime")
@@ -414,12 +384,6 @@ namespace TimeProject.Server.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordResetToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PasswordResetTokenExpires")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
@@ -452,10 +416,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 1,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8204),
+                            CreateDate = new DateTime(2025, 5, 29, 14, 13, 6, 937, DateTimeKind.Local).AddTicks(5816),
                             Email = "admin@example.com",
                             Name = "Yusuf",
-                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
+                            PasswordHash = "$2a$11$vJfM/VJV0Ts3Pcr0UBz.SOoGpLapTcxE1EOE5JrByLLeh689JttwG",
                             PhoneNumber = "1234567890",
                             RoleId = 1,
                             Surname = "Bozkurt",
@@ -466,10 +430,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 2,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8226),
+                            CreateDate = new DateTime(2025, 5, 29, 14, 13, 6, 937, DateTimeKind.Local).AddTicks(5840),
                             Email = "mehmet@example.com",
                             Name = "Mehmet",
-                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
+                            PasswordHash = "$2a$11$vJfM/VJV0Ts3Pcr0UBz.SOoGpLapTcxE1EOE5JrByLLeh689JttwG",
                             PhoneNumber = "05537668452",
                             RoleId = 2,
                             Surname = "Ali",
@@ -479,10 +443,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 3,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8382),
+                            CreateDate = new DateTime(2025, 5, 29, 14, 13, 6, 937, DateTimeKind.Local).AddTicks(5843),
                             Email = "ahmet@example.com",
                             Name = "ahmet",
-                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
+                            PasswordHash = "$2a$11$vJfM/VJV0Ts3Pcr0UBz.SOoGpLapTcxE1EOE5JrByLLeh689JttwG",
                             PhoneNumber = "05528445566",
                             RoleId = 2,
                             Surname = "can",
@@ -516,17 +480,6 @@ namespace TimeProject.Server.Migrations
                     b.Navigation("Transactions");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TimeProject.Server.Model.EventParticipant", b =>
-                {
-                    b.HasOne("TimeProject.Server.Model.Events", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("TimeProject.Server.Model.Events", b =>

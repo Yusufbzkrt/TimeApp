@@ -22,6 +22,8 @@ namespace TimeProject.Server.Data
         public DbSet<User> User { get; set; }
         public DbSet<Blog> Blog { get; set; }
         public DbSet<TaskModel> TaskModel { get; set; }
+        public DbSet<EventParticipant> EventParticipants { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

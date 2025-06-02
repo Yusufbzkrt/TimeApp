@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeProject.Server.Data;
 
@@ -11,9 +12,11 @@ using TimeProject.Server.Data;
 namespace TimeProject.Server.Migrations
 {
     [DbContext(typeof(TimeProjectDbContext))]
-    partial class TimeProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250530164142_useraddedresetpassword")]
+    partial class useraddedresetpassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -20,44 +20,55 @@ import { NotificationProvider } from './Notifications/NotificationContext';
 import Calendar from './User/calendar';
 import Task from './User/Task';
 import MyBlogEdit from './User/MyBlogEdit';
-
+import Ayarlar from './User/Ayarlar';
+import Document from './User/Document';
+import { ThemeProvider } from './context/ThemeContext';
+import Report from './User/Reports';
+import AllEvents from './HomePage/AllEvents';
+import JoinForm from './HomePage/JoinForm';
+import ResetPassword from './Auth/ResetPassword';
 function App() {
     return (
-        <NotificationProvider>
-        <Router>
-            <Routes>
-                {/* Ana sayfa */}
-                <Route path="/" element={<HomePage />} />
+        <ThemeProvider>
+            <NotificationProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
 
-                {/* Giriş yapma sayfası */}
-                <Route path="/login" element={<Login />} />
+                        <Route path="/login" element={<Login />} />
+                        
+                        <Route path="/register" element={<Register />} />
 
-                    <Route path="/calendar" element={<Calendar />} />
+                        <Route path="/chat" element={<MessageComponent />} />
 
-                    <Route path="/task" element={<Task />} />
-                {/* Kayıt olma sayfası */}
-                <Route path="/register" element={<Register />} />
+                        <Route path="/about" element={<About />} />
+
+                        <Route path="mycontactedit" element={<MyContactEdit />} />
+                        <Route path="AllEvents" element={<AllEvents />} />
+                        <Route path="/join/:eventId" element={<JoinForm />} />
+                        <Route path="reset-password" element={<ResetPassword />} />
 
 
-                <Route path="/chat" element={<MessageComponent />} />
-                {/* Mesaj gönderme sayfası */}
-                <Route path="/about" element={<About />} />
 
-                    <Route path="mycontactedit" element={<MyContactEdit />} />
-
-                <Route path="/user" element={<UserLayout />}>
-                    <Route path="/user/home" element={<UserHomePage />} />
-                    <Route path="/user/blog" element={<MyBlog />} />
-                    <Route path="/user/blog/edit/:blogId" element={<MyBlogEdit />} />
-                    <Route path="/user/iletisim" element={<MyContact />} />
-                    <Route path="/user/yardim" element={<MyHelp />} />
-                    <Route path="myservices" element={<MyServices />} />
-                    <Route path="/user/etkinlikler" element={<Etkinlikler />} />
-                    <Route path="/user/etkinlikler/duzenle/:eventsId" element={<EditEtkinlik />} />
-                </Route>
-            </Routes>
-            </Router>
-        </NotificationProvider>
+                        <Route path="/user" element={<UserLayout />}>
+                            <Route path="/user/home" element={<UserHomePage />} />
+                            <Route path="/user/blog" element={<MyBlog />} />
+                            <Route path="/user/blog/edit/:blogId" element={<MyBlogEdit />} />
+                            <Route path="/user/iletisim" element={<MyContact />} />
+                            <Route path="/user/yardim" element={<MyHelp />} />
+                            <Route path="myservices" element={<MyServices />} />
+                            <Route path="/user/etkinlikler" element={<Etkinlikler />} />
+                            <Route path="/user/etkinlikler/duzenle/:eventsId" element={<EditEtkinlik />} />
+                            <Route path="/user/documents" element={<Document />} />
+                            <Route path="/user/ayarlar" element={<Ayarlar />} />
+                            <Route path="/user/calendar" element={<Calendar />} />
+                            <Route path="/user/task" element={<Task />} />
+                            <Route path="/user/reports" element={<Report />} />
+                        </Route>
+                    </Routes>
+                </Router>
+            </NotificationProvider>
+        </ThemeProvider>
     );
 }
 

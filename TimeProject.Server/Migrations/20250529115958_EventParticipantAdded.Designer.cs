@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeProject.Server.Data;
 
@@ -11,9 +12,11 @@ using TimeProject.Server.Data;
 namespace TimeProject.Server.Migrations
 {
     [DbContext(typeof(TimeProjectDbContext))]
-    partial class TimeProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250529115958_EventParticipantAdded")]
+    partial class EventParticipantAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -414,12 +417,6 @@ namespace TimeProject.Server.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordResetToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PasswordResetTokenExpires")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
@@ -452,10 +449,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 1,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8204),
+                            CreateDate = new DateTime(2025, 5, 29, 14, 59, 57, 898, DateTimeKind.Local).AddTicks(825),
                             Email = "admin@example.com",
                             Name = "Yusuf",
-                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
+                            PasswordHash = "$2a$11$D.t/b8t0gHtDcufqtuQTg.9nkfpdGQEeFRB4hFKd2HxlHi.zWInae",
                             PhoneNumber = "1234567890",
                             RoleId = 1,
                             Surname = "Bozkurt",
@@ -466,10 +463,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 2,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8226),
+                            CreateDate = new DateTime(2025, 5, 29, 14, 59, 57, 898, DateTimeKind.Local).AddTicks(850),
                             Email = "mehmet@example.com",
                             Name = "Mehmet",
-                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
+                            PasswordHash = "$2a$11$D.t/b8t0gHtDcufqtuQTg.9nkfpdGQEeFRB4hFKd2HxlHi.zWInae",
                             PhoneNumber = "05537668452",
                             RoleId = 2,
                             Surname = "Ali",
@@ -479,10 +476,10 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 3,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8382),
+                            CreateDate = new DateTime(2025, 5, 29, 14, 59, 57, 898, DateTimeKind.Local).AddTicks(853),
                             Email = "ahmet@example.com",
                             Name = "ahmet",
-                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
+                            PasswordHash = "$2a$11$D.t/b8t0gHtDcufqtuQTg.9nkfpdGQEeFRB4hFKd2HxlHi.zWInae",
                             PhoneNumber = "05528445566",
                             RoleId = 2,
                             Surname = "can",
