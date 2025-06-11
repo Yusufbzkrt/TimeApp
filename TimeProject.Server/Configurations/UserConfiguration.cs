@@ -1,8 +1,9 @@
-﻿namespace TimeProject.Server.Model.Configuration
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using BCrypt.Net;
+namespace TimeProject.Server.Model.Configuration
 {
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using BCrypt.Net; // Şifre hashleme için
+    // Şifre hashleme için
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {
