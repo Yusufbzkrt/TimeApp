@@ -1,4 +1,7 @@
-﻿namespace TimeProject.Server.Model
+﻿using Nest;
+using TimeProject.Server.Model;
+
+namespace TimeProject.Server.Model
 {
     public class User
     {
@@ -7,8 +10,8 @@
         public string? Surname { get; set; }
         public string? Email { get; set; }
         public string? PasswordHash { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? ImageUrl { get; set; }
+        public string? PhoneNumber { get; set; } 
+        public string? avatar { get; set; }
         public int RoleId { get; set; }
         public Role? Role { get; set; }
         public bool TestResult { get; set; }
@@ -17,5 +20,8 @@
         public DateTime CreateDate { get; set; }
         public ICollection<Events>? Events { get; set; }
         public ICollection<Services>? UserServices { get; set; }
+
+        public string? PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenExpires { get; set; }
     }
 }

@@ -27,12 +27,13 @@ namespace TimeProject.Server.Controllers.User
         [HttpGet("GetEvents")]
         public async Task<ActionResult<IEnumerable<Events>>> GetEventsForUser()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
             {
-                return Unauthorized("Kullanıcı kimliği doğrulanamadı.");
+                return Unauthorized(new { message = "Geçersiz kullanıcı" });
             }
-            var createdByUserId = int.Parse(userId);
+            var createdByUserId = int.Parse(userIdClaim.Value);
 
             var events = await _context.Events
                  .Where(e => e.CreatedByUserID == createdByUserId)
@@ -46,31 +47,76 @@ namespace TimeProject.Server.Controllers.User
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult<EventsDto>> PostEvent(EventsDto evntDto)
+        public async Task<ActionResult<EventsDto>> PostEvent([FromForm] EventsDto evntDto)
         {
-            var eventEntity = new Events
+            try
             {
-                EventName = evntDto.EventName,
-                Description = evntDto.Description,
-                DateTime = evntDto.DateTime,
-                CreatedByUserID = evntDto.CreatedByUserID,
-            };
-            _context.Events.Add(eventEntity);
-            await _context.SaveChangesAsync();
-            var resultDto = new EventsDto
-            {
-                EventsId = eventEntity.EventsId,
-                EventName = eventEntity.EventName,
-                Description = eventEntity.Description,
-                DateTime = eventEntity.DateTime,
-                CreatedByUserID = eventEntity.CreatedByUserID,
-            };
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-            return Ok(resultDto);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Geçersiz kullanıcı" });
+                }
+                int userId = int.Parse(userIdClaim.Value);
+
+                string imagePath = null;
+                if (evntDto.Image != null)
+                {
+                    var fileName = Guid.NewGuid() + Path.GetExtension(evntDto.Image.FileName);
+                    var filePath = Path.Combine("wwwroot", "images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await evntDto.Image.CopyToAsync(stream);
+                    }
+
+                    imagePath = $"/images/{fileName}";
+                }
+                var eventEntity = new Events
+                {
+                    EventName = evntDto.EventName,
+                    Description = evntDto.Description,
+                    DateTime = evntDto.DateTime,
+                    CreatedByUserID = userId,
+                    Image = imagePath,
+                    IsActive = true
+                };
+                _context.Events.Add(eventEntity);
+                await _context.SaveChangesAsync();
+                var resultDto = new EventsDto
+                {
+                    EventsId = eventEntity.EventsId,
+                    EventName = eventEntity.EventName,
+                    Description = eventEntity.Description,
+                    DateTime = eventEntity.DateTime,
+
+                };
+
+                return Ok(resultDto);
+            }
+            catch (Exception ex)
+            {
+                // Hatanın sebebini görmek için logla
+                Console.WriteLine("Etkinlik ekleme hatası: " + ex.Message);
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
         }
 
+        [HttpGet("{eventsId}")]
+        public async Task<IActionResult> GetEvent(int eventsId)
+        {
+            var evnt = await _context.Events.FindAsync(eventsId);
+            if (evnt == null)
+            {
+                return NotFound(new { errorText = "Etkinlik bulunamadı." });
+            }
+
+            return Ok(evnt);
+        }
+
+
         [HttpPut("{eventsId}")]
-        public async Task<IActionResult> PutEvent(int eventsId, EventsDto evntDto)
+        public async Task<IActionResult> PutEvent(int eventsId, [FromForm] EventsDto evntDto)
         {
             // Etkinlik var mı kontrol et
             var evnt = await _context.Events.FindAsync(eventsId);
@@ -84,12 +130,28 @@ namespace TimeProject.Server.Controllers.User
             evnt.Description = evntDto.Description;
             evnt.DateTime = evntDto.DateTime;
 
+            if (evntDto.Image != null)
+            {
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(evntDto.Image.FileName)}";
+                var filePath = Path.Combine("wwwroot/images", fileName);
+
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await evntDto.Image.CopyToAsync(stream);
+                }
+
+                evnt.Image = $"/images/{fileName}";
+            }
+
             try
             {
-                // Veritabanı kaydını güncelle
                 _context.Entry(evnt).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "Etkinlik başarıyla güncellendi." });
+                var result = await _context.SaveChangesAsync();
+                if (result > 0)
+                    return Ok(new { message = "Etkinlik başarıyla güncellendi." });
+                else
+                    return StatusCode(500, new { errorText = "Veritabanı güncellenmedi." });
             }
             catch (Exception)
             {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faClock, faTasks, faUser, faBell, faCog, faSignOutAlt, faHome, faChartLine, faFileAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -6,70 +6,57 @@ import "./UserHomePage.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const UserHomePage = () => {
+
+    const [notifications, setNotifications] = useState([
+        {
+            id: 1,
+            title: "Hoşgeldiniz",
+            message: "Zaman yönetim uygulamasına hoşgeldiniz.",
+            time: "10:00",
+            unread: true,
+        },
+    ]);
+
+    const clearNotifications = () => {
+        setNotifications([]);
+    };
     return (
         <div className="user-home-container">
-            {/* Sidebar */}
-            <div className="sidebar">
-                <div className="sidebar-header">
-                    <h3>Kullanıcı Paneli</h3>
-                </div>
-                <div className="sidebar-menu">
-                    <Link to="/user" className="sidebar-item active">
-                        <FontAwesomeIcon icon={faHome} />
-                        <span>Ana Sayfa</span>
-                    </Link>
-                    <Link to="/user/profile" className="sidebar-item">
-                        <FontAwesomeIcon icon={faUser} />
-                        <span>Profil</span>
-                    </Link>
-                    <Link to="/user/calendar" className="sidebar-item">
-                        <FontAwesomeIcon icon={faCalendar} />
-                        <span>Takvim</span>
-                    </Link>
-                    <Link to="/user/tasks" className="sidebar-item">
-                        <FontAwesomeIcon icon={faTasks} />
-                        <span>Görevler</span>
-                    </Link>
-                    <Link to="/user/reports" className="sidebar-item">
-                        <FontAwesomeIcon icon={faChartLine} />
-                        <span>Raporlar</span>
-                    </Link>
-                    <Link to="/user/documents" className="sidebar-item">
-                        <FontAwesomeIcon icon={faFileAlt} />
-                        <span>Dokümanlar</span>
-                    </Link>
-                    <Link to="/user/settings" className="sidebar-item">
-                        <FontAwesomeIcon icon={faCog} />
-                        <span>Ayarlar</span>
-                    </Link>
-                    <Link to="/logout" className="sidebar-item">
-                        <FontAwesomeIcon icon={faSignOutAlt} />
-                        <span>Çıkış</span>
-                    </Link>
-                </div>
-            </div>
-
             {/* Main Content */}
             <div className="main-content">
                 <header className="user-header">
                     <div className="header-content">
-                        <h1>Hoş Geldiniz!</h1>
-                        <p>Zaman yönetim uygulamanızda günlük aktivitelerinizi planlayın ve takip edin.</p>
+                        <div className="header-welcome" style={{ color: '#ffffff' }}>
+                            <h1 style={{ color: '#ffffff' }}>Hoş Geldiniz!</h1>
+                            <p style={{ color: '#ffffff' }}>Zaman yönetim uygulamanızda günlük aktivitelerinizi planlayın ve takip edin.</p>
+                        </div>
                         <div className="header-stats">
                             <div className="stat-item">
-                                <i className="fas fa-clock"></i>
-                                <span>Toplam Zaman</span>
-                                <h3>24 Saat</h3>
+                                <div className="stat-icon">
+                                    <FontAwesomeIcon icon={faClock} />
+                                </div>
+                                <div className="stat-info">
+                                    <span className="stat-label">Toplam Zaman</span>
+                                    <h3>24 Saat</h3>
+                                </div>
                             </div>
                             <div className="stat-item">
-                                <i className="fas fa-tasks"></i>
-                                <span>Tamamlanan Görevler</span>
-                                <h3>12</h3>
+                                <div className="stat-icon">
+                                    <FontAwesomeIcon icon={faTasks} />
+                                </div>
+                                <div className="stat-info">
+                                    <span className="stat-label">Tamamlanan Görevler</span>
+                                    <h3>12</h3>
+                                </div>
                             </div>
                             <div className="stat-item">
-                                <i className="fas fa-star"></i>
-                                <span>Verimlilik</span>
-                                <h3>85%</h3>
+                                <div className="stat-icon">
+                                    <FontAwesomeIcon icon={faChartLine} />
+                                </div>
+                                <div className="stat-info">
+                                    <span className="stat-label">Verimlilik</span>
+                                    <h3>85%</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -79,11 +66,11 @@ const UserHomePage = () => {
                     <section className="quick-actions">
                         <h2>Hızlı Erişim</h2>
                         <div className="action-grid">
-                            <Link to="/events" className="action-card">
+                            <Link to="/user/etkinlikler" className="action-card">
                                 <i className="fas fa-calendar-plus"></i>
                                 <span>Etkinlik Ekle</span>
                             </Link>
-                            <Link to="/tasks" className="action-card">
+                            <Link to="/user/task" className="action-card">
                                 <i className="fas fa-tasks"></i>
                                 <span>Görevler</span>
                             </Link>
@@ -91,7 +78,7 @@ const UserHomePage = () => {
                                 <i className="fas fa-sticky-note"></i>
                                 <span>Notlar</span>
                             </Link>
-                            <Link to="/settings" className="action-card">
+                            <Link to="/user/ayarlar" className="action-card">
                                 <i className="fas fa-cog"></i>
                                 <span>Ayarlar</span>
                             </Link>
@@ -126,33 +113,23 @@ const UserHomePage = () => {
             <div className="notification-panel">
                 <div className="notification-header">
                     <h3>Bildirimler</h3>
-                    <button className="notification-clear">Tümünü Temizle</button>
+                    <button onClick={clearNotifications} className="notification-clear">Tümünü Temizle</button>
                 </div>
                 <div className="notification-list">
-                    <div className="notification-item unread">
-                        <FontAwesomeIcon icon={faBell} className="notification-icon" />
-                        <div className="notification-content">
-                            <h4>Yeni Görev Atandı</h4>
-                            <p>Proje planlaması için yeni bir görev atandı.</p>
-                            <span className="notification-time">2 saat önce</span>
-                        </div>
-                    </div>
-                    <div className="notification-item">
-                        <FontAwesomeIcon icon={faEnvelope} className="notification-icon" />
-                        <div className="notification-content">
-                            <h4>Yeni Mesaj</h4>
-                            <p>Ahmet Bey'den yeni bir mesaj aldınız.</p>
-                            <span className="notification-time">5 saat önce</span>
-                        </div>
-                    </div>
-                    <div className="notification-item">
-                        <FontAwesomeIcon icon={faCalendar} className="notification-icon" />
-                        <div className="notification-content">
-                            <h4>Toplantı Hatırlatması</h4>
-                            <p>Yarın saat 14:00'te proje toplantısı var.</p>
-                            <span className="notification-time">1 gün önce</span>
-                        </div>
-                    </div>
+                    {notifications.length === 0 ? (
+                        <p>Bildirim yok</p>
+                    ) : (
+                        notifications.map(n => (
+                            <div key={n.id} className={`notification-item ${n.unread ? 'unread' : ''}`}>
+                                <FontAwesomeIcon icon={faEnvelope} className="notification-icon" />
+                                <div className="notification-content">
+                                    <h4>{n.title}</h4>
+                                    <p>{n.message}</p>
+                                    <span className="notification-time">{n.time}</span>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </div>

@@ -9,21 +9,39 @@ using TimeProject.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer
-    (options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Token:Issuer"],
             ValidAudience = builder.Configuration["Token:Audience"],
-            ValidateLifetime = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),
             ClockSkew = TimeSpan.Zero
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"]; 
+
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    (path.StartsWithSegments("/messageHub"))) 
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
+
+builder.Services.AddAuthorization(); 
 
 // Servislerin eklenmesi
 builder.Services.AddDbContext<TimeProjectDbContext>(options =>
@@ -42,22 +60,28 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 
-
 // CORS yapılandırması
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("https://localhost:5173") // React frontend URL'niz
+        policy.WithOrigins("https://localhost:5173") 
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials();  // Credentials (cookies veya token) desteği
+              .AllowCredentials();  
     });
+});
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();
 
-// Middleware sırası
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -68,16 +92,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
 // CORS Middleware
 app.UseCors("AllowSpecificOrigin");
 
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapHub<MessageHub>("/messageHub");
+app.UseSession();
 
-// Endpoint'lerin tanımlanması
+app.UseAuthentication(); 
+app.UseAuthorization();  
+
 app.MapControllers();
+app.MapHub<MessageHub>("/messageHub"); 
 
 app.MapFallbackToFile("/index.html");
 

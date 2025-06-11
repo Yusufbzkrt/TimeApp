@@ -22,6 +22,66 @@ namespace TimeProject.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("TimeProject.Models.TaskModel", b =>
+                {
+                    b.Property<int>("TaskID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskID"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TaskName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TaskID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TaskModel");
+
+                    b.HasData(
+                        new
+                        {
+                            TaskID = 1,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Ödevi yap",
+                            DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Priority = "Normal",
+                            Status = "pending",
+                            TaskName = "Ödev",
+                            UserId = 8
+                        });
+                });
+
             modelBuilder.Entity("TimeProject.Server.Model.AccountStatus", b =>
                 {
                     b.Property<int>("AccountStatusId")
@@ -51,6 +111,9 @@ namespace TimeProject.Server.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -95,6 +158,33 @@ namespace TimeProject.Server.Migrations
                     b.ToTable("Credits");
                 });
 
+            modelBuilder.Entity("TimeProject.Server.Model.EventParticipant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("EventParticipants");
+                });
+
             modelBuilder.Entity("TimeProject.Server.Model.Events", b =>
                 {
                     b.Property<int>("EventsId")
@@ -103,7 +193,13 @@ namespace TimeProject.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventsId"));
 
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
                     b.Property<int>("CreatedByUserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentParticipants")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateTime")
@@ -115,8 +211,14 @@ namespace TimeProject.Server.Migrations
                     b.Property<string>("EventName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EventsId");
 
@@ -148,12 +250,7 @@ namespace TimeProject.Server.Migrations
                     b.Property<int>("SenderUserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("MessagesId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Messages");
                 });
@@ -309,10 +406,6 @@ namespace TimeProject.Server.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -320,6 +413,12 @@ namespace TimeProject.Server.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PasswordResetTokenExpires")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(15)
@@ -336,6 +435,10 @@ namespace TimeProject.Server.Migrations
                     b.Property<bool>("TestResult")
                         .HasColumnType("bit");
 
+                    b.Property<string>("avatar")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.HasKey("UserId");
 
                     b.HasIndex("AccountStatusId1");
@@ -349,25 +452,24 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 1,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 4, 11, 14, 6, 28, 423, DateTimeKind.Local).AddTicks(5384),
+                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8204),
                             Email = "admin@example.com",
-                            ImageUrl = "/images/mona.jpg",
                             Name = "Yusuf",
-                            PasswordHash = "$2a$11$pNpl6CuE0/pMm1Fh4HxD.OoqihoV/UVAITHDI04/QTyi/wNU/kQGq",
+                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
                             PhoneNumber = "1234567890",
                             RoleId = 1,
                             Surname = "Bozkurt",
-                            TestResult = false
+                            TestResult = false,
+                            avatar = "/images/mona.jpg"
                         },
                         new
                         {
                             UserId = 2,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 4, 11, 14, 6, 28, 423, DateTimeKind.Local).AddTicks(5404),
+                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8226),
                             Email = "mehmet@example.com",
-                            ImageUrl = "/images/mona.jpg",
                             Name = "Mehmet",
-                            PasswordHash = "$2a$11$pNpl6CuE0/pMm1Fh4HxD.OoqihoV/UVAITHDI04/QTyi/wNU/kQGq",
+                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
                             PhoneNumber = "05537668452",
                             RoleId = 2,
                             Surname = "Ali",
@@ -377,16 +479,26 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 3,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 4, 11, 14, 6, 28, 423, DateTimeKind.Local).AddTicks(5407),
+                            CreateDate = new DateTime(2025, 5, 30, 19, 41, 41, 887, DateTimeKind.Local).AddTicks(8382),
                             Email = "ahmet@example.com",
-                            ImageUrl = "/images/mona.jpg",
                             Name = "ahmet",
-                            PasswordHash = "$2a$11$pNpl6CuE0/pMm1Fh4HxD.OoqihoV/UVAITHDI04/QTyi/wNU/kQGq",
+                            PasswordHash = "$2a$11$BQxqXDoYufcd2QspfTg54eYbN.OdCHaF0ihUUoqUMcJ3.PIW8d0aC",
                             PhoneNumber = "05528445566",
                             RoleId = 2,
                             Surname = "can",
                             TestResult = false
                         });
+                });
+
+            modelBuilder.Entity("TimeProject.Models.TaskModel", b =>
+                {
+                    b.HasOne("TimeProject.Server.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TimeProject.Server.Model.Credits", b =>
@@ -406,6 +518,17 @@ namespace TimeProject.Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TimeProject.Server.Model.EventParticipant", b =>
+                {
+                    b.HasOne("TimeProject.Server.Model.Events", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+                });
+
             modelBuilder.Entity("TimeProject.Server.Model.Events", b =>
                 {
                     b.HasOne("TimeProject.Server.Model.User", "User")
@@ -413,15 +536,6 @@ namespace TimeProject.Server.Migrations
                         .HasForeignKey("CreatedByUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TimeProject.Server.Model.Messages", b =>
-                {
-                    b.HasOne("TimeProject.Server.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

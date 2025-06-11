@@ -25,7 +25,7 @@ const HomePage = () => {
                 <ul>
                     <li><Link to="/"><i className="fas fa-home"></i> Anasayfa</Link></li>
                     <li><Link to="/about"><i className="fas fa-info-circle"></i> Hakkımızda</Link></li>
-                    <li><Link to="/services"><i className="fas fa-calendar-alt"></i> Etkinlikler</Link></li>
+                    <li><Link to="/AllEvents"><i className="fas fa-calendar-alt"></i> Etkinlikler</Link></li>
                     <li><Link to="/contact"><i className="fas fa-envelope"></i> İletişim</Link></li>
                     <li><Link to="/help"><i className="fas fa-question-circle"></i> Yardım</Link></li>
                     <li><Link to="/blog"><i className="fas fa-blog"></i> Blog</Link></li>

@@ -4,11 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using TimeProject.Server.Data;
 using TimeProject.Server.Model;
 using TimeProject.Server.Model.Dto;
+using MailKit.Net.Smtp;
+using MimeKit;
+using TimeProject.Server.Helpers;
+using MailKit.Security;
+
 
 namespace TimeProject.Server.Controllers
 {
@@ -41,8 +47,8 @@ namespace TimeProject.Server.Controllers
 
             var user = new Model.User
             {
-                Name = registerDto.Name,
-                Surname = registerDto.Surname,
+                Name = registerDto.FirstName,
+                Surname = registerDto.LastName,
                 Email = registerDto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
                 PhoneNumber = registerDto.PhoneNumber,
@@ -57,7 +63,7 @@ namespace TimeProject.Server.Controllers
                     ServiceName = registerDto.ServiceName,
                     Description = registerDto.Description,
                     CreatedAt = DateTime.UtcNow,
-                    UserId = user.UserId 
+                    UserId = user.UserId
                 };
                 await _context.User.AddAsync(user);
                 await _context.SaveChangesAsync();
@@ -119,7 +125,69 @@ namespace TimeProject.Server.Controllers
             }
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if (user == null)
+            {
+                return Ok(new { message = "Şifre sıfırlama linki e-posta adresinize gönderildi." });
+            }
 
+            var token = Guid.NewGuid().ToString();
+
+            user.PasswordResetToken = token;
+            user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(1);
+
+            await _context.SaveChangesAsync();
+
+            var resetLink = $"https://senin-site-adresin.com/reset-password?email={user.Email}&token={token}";
+            await SendEmailAsync(user.Email, "Şifre Sıfırlama", $"Şifrenizi yenilemek için tıklayın: {resetLink}");
+
+            return Ok(new { message = "Şifre sıfırlama linki e-posta adresinize gönderildi." });
+        }
+
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(u =>
+                u.Email == dto.Email &&
+                u.PasswordResetToken == dto.Token &&
+                u.PasswordResetTokenExpires > DateTime.UtcNow);
+
+            if (user == null)
+                return BadRequest(new { message = "Geçersiz veya süresi dolmuş token." });
+
+            // Şifreyi hash'leyip kaydet
+            user.PasswordHash = PasswordHelper.HashPassword(dto.NewPassword);
+            user.PasswordResetToken = null;
+            user.PasswordResetTokenExpires = null;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Şifre başarıyla yenilendi." });
+        }
+
+        [HttpPost("send-email")]
+        public async Task SendEmailAsync(string to, string subject, string body)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Time Project", "yazilim.stajyer@haberler.com"));
+            message.To.Add(MailboxAddress.Parse(to));
+            message.Subject = subject;
+
+            var bodyBuilder = new BodyBuilder { HtmlBody = body };
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            {
+                await client.ConnectAsync("smtp.example.com", 587, SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync("yazilim.stajyer@haberler.com", "Haberler.12");
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+            }
+        }
 
 
     }

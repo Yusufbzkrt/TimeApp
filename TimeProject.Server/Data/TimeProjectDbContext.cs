@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TimeProject.Models;
+using TimeProject.Server.Configurations;
 using TimeProject.Server.Model;
 using TimeProject.Server.Model.Configuration;
 
@@ -19,6 +21,9 @@ namespace TimeProject.Server.Data
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Blog> Blog { get; set; }
+        public DbSet<TaskModel> TaskModel { get; set; }
+        public DbSet<EventParticipant> EventParticipants { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,8 +41,18 @@ namespace TimeProject.Server.Data
                 .WithMany(u => u.Events)
                 .HasForeignKey(e => e.CreatedByUserID);
 
+            modelBuilder.Entity<TaskModel>()
+    .HasOne(t => t.User)
+    .WithMany() // Eğer User sınıfında ICollection<TaskModel> Tasks yoksa
+    .HasForeignKey(t => t.UserId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskConfiguration());
         }
     }
 }

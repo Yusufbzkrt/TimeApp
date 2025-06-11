@@ -1,98 +1,244 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+    faCalendarAlt, 
+    faEdit, 
+    faImage, 
+    faClock, 
+    faSave, 
+    faTimes, 
+    faSpinner,
+    faArrowLeft
+} from '@fortawesome/free-solid-svg-icons';
 import './Etkinlikler.css';
 
 const EditEtkinlik = () => {
-    const { eventsId } = useParams(); // Etkinlik ID'sini URL'den alýyoruz
-    const [form, setForm] = useState({ title: '', description: '', date: '' });
+    const { eventsId } = useParams();
     const navigate = useNavigate();
+    const [saving, setSaving] = useState(false);
 
-    // Etkinliði API'den al
-    const fetchEvent = async () => {
-        try {
-            const res = await fetch(`https://localhost:7120/api/Events/GetEvents`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
-                },
-            });
+    const [form, setForm] = useState({
+        title: '',
+        description: '',
+        date: '',
+        image: '',
+        imageFile: null
+    });
 
-            if (!res.ok) {
-                throw new Error(`API Hata: ${res.status}`);
-            }
-
-            const data = await res.json();
-            console.log('API yanýtý:', data); 
-            setForm({
-                title: data.eventName,
-                description: data.description,
-                date: new Date(data.dateTime).toISOString().slice(0, 16), // Date format adjustment
-            });
-        } catch (err) {
-            console.error('Etkinlik yüklenirken hata:', err);
-        }
-    };
-
-    // Etkinlik güncelleme iþlemi
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await fetch(`https://localhost:7120/api/Events/${eventsId}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
-                },
-                body: JSON.stringify({
-                    EventName: form.title,
-                    Description: form.description,
-                    DateTime: form.date,
-                    CreatedByUserID: 1,  // Bu kullanýcý ID'si dinamik olabilir, burada sabit kullanýldý
-                }),
-            });
-
-            if (res.ok) {
-                alert('Etkinlik baþarýyla güncellendi');
-                navigate('/user/etkinlikler'); // Baþarýyla güncellendikten sonra etkinlikler sayfasýna yönlendir
-            } else {
-                alert('Etkinlik güncellenemedi');
-            }
-        } catch (err) {
-            console.error('Güncelleme hatasý:', err);
-            alert('Bir hata oluþtu');
-        }
+    const toLocalDatetimeInputValue = (dateString) => {
+        const dt = new Date(dateString);
+        if (isNaN(dt)) return '';
+        const pad = (n) => n.toString().padStart(2, '0');
+        return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
     };
 
     useEffect(() => {
         fetchEvent();
     }, [eventsId]);
 
+    const fetchEvent = async () => {
+        try {
+            const res = await fetch(`https://localhost:7120/api/Events/${eventsId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                },
+            });
+
+            if (!res.ok) throw new Error(`API Hata: ${res.status}`);
+
+            const data = await res.json();
+            setForm({
+                title: data.eventName,
+                description: data.description,
+                date: toLocalDatetimeInputValue(data.dateTime),
+                image: data.image || '',
+                imageFile: null
+            });
+        } catch (err) {
+            console.error('Etkinlik yÃ¼klenirken hata:', err);
+            alert('Etkinlik yÃ¼klenirken bir hata oluÅŸtu.');
+        }
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setForm((prev) => ({ ...prev, imageFile: file }));
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('EventName', form.title);
+            formData.append('Description', form.description);
+            formData.append('DateTime', new Date(form.date).toISOString());
+            if (form.imageFile) {
+                formData.append('Image', form.imageFile);
+            }
+
+            const res = await fetch(`https://localhost:7120/api/Events/${eventsId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                },
+                body: formData,
+            });
+
+            if (res.ok) {
+                alert('Etkinlik baÅŸarÄ±yla gÃ¼ncellendi');
+                navigate('/user/etkinlikler');
+            } else {
+                alert('Etkinlik gÃ¼ncellenemedi');
+            }
+        } catch (err) {
+            console.error('GÃ¼ncelleme hatasÄ±:', err);
+            alert('Bir hata oluÅŸtu');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleCancel = () => {
+        navigate('/user/etkinlikler');
+    };
+
     return (
         <div className="events-container">
             <div className="events-header">
-                <h1>Etkinlik Düzenle</h1>
+                <div className="header-content">
+                    <button className="back-button" onClick={handleCancel}>
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                    </button>
+                    <h1>
+                        <FontAwesomeIcon icon={faEdit} className="header-icon" />
+                        Etkinlik DÃ¼zenle
+                    </h1>
+                </div>
             </div>
 
-            <form className="event-form" onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Etkinlik Baþlýðý"
-                    value={form.title}
-                    onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    required
-                />
-                <textarea
-                    placeholder="Etkinlik Açýklamasý"
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    required
-                ></textarea>
-                <input
-                    type="datetime-local"
-                    value={form.date}
-                    onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    required
-                />
-                <button type="submit">Etkinliði Güncelle</button>
-            </form>
+            <div className="edit-event-form">
+                {form.image && !form.imageFile && (
+                    <div className="current-image-preview">
+                        <h3>Mevcut GÃ¶rsel</h3>
+                        <div className="image-container">
+                            <img
+                                src={`https://localhost:7120${form.image}`}
+                                alt="Mevcut Etkinlik GÃ¶rseli"
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {form.imageFile && (
+                    <div className="new-image-preview">
+                        <h3>Yeni GÃ¶rsel Ã–nizleme</h3>
+                        <div className="image-container">
+                            <img
+                                src={URL.createObjectURL(form.imageFile)}
+                                alt="Yeni Etkinlik GÃ¶rseli"
+                            />
+                        </div>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>
+                            <FontAwesomeIcon icon={faCalendarAlt} />
+                            Etkinlik BaÅŸlÄ±ÄŸÄ±
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Etkinlik baÅŸlÄ±ÄŸÄ±nÄ± girin"
+                            value={form.title}
+                            onChange={(e) => setForm({ ...form, title: e.target.value })}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>
+                            <FontAwesomeIcon icon={faEdit} />
+                            Etkinlik AÃ§Ä±klamasÄ±
+                        </label>
+                        <textarea
+                            placeholder="Etkinlik detaylarÄ±nÄ± girin"
+                            value={form.description}
+                            onChange={(e) => setForm({ ...form, description: e.target.value })}
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>
+                                <FontAwesomeIcon icon={faClock} />
+                                Tarih ve Saat
+                            </label>
+                            <input
+                                type="datetime-local"
+                                value={form.date}
+                                onChange={(e) => setForm({ ...form, date: e.target.value })}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>
+                                <FontAwesomeIcon icon={faImage} />
+                                Etkinlik GÃ¶rseli
+                            </label>
+                            <div className="file-input-container">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    id="event-image"
+                                    className="file-input"
+                                />
+                                <label htmlFor="event-image" className="file-input-label">
+                                    <FontAwesomeIcon icon={faImage} />
+                                    <span>GÃ¶rsel SeÃ§</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="form-actions">
+                        <button 
+                            type="button" 
+                            className="cancel-button"
+                            onClick={handleCancel}
+                            disabled={saving}
+                        >
+                            <FontAwesomeIcon icon={faTimes} />
+                            <span>Ä°ptal</span>
+                        </button>
+                        <button 
+                            type="submit" 
+                            className="save-button"
+                            disabled={saving}
+                        >
+                            {saving ? (
+                                <>
+                                    <FontAwesomeIcon icon={faSpinner} spin />
+                                    <span>Kaydediliyor...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <FontAwesomeIcon icon={faSave} />
+                                    <span>Kaydet</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

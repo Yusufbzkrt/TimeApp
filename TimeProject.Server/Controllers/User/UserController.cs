@@ -22,9 +22,46 @@ namespace TimeProject.Server.Controllers.User
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _context.User.ToListAsync();
-            return Ok(users);
+            var currentUserIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(currentUserIdString, out int currentUserId))
+            {
+                return Unauthorized("Geçersiz kullanıcı kimliği.");
+            }
+
+            var users = await _context.User
+                                    .Where(u => u.UserId != currentUserId)
+                                    .ToListAsync();
+
+            var userListDtos = new List<UserListDto>();
+
+            foreach (var user in users)
+            {
+                var lastMessage = await _context.Messages
+                                                .Where(m => (m.SenderUserId == currentUserId && m.ReceiveUserId == user.UserId) ||
+                                                            (m.SenderUserId == user.UserId && m.ReceiveUserId == currentUserId))
+                                                .OrderByDescending(m => m.SendAt) // En yeni mesaj en başta olacak
+                                                .FirstOrDefaultAsync(); // Sadece en yeni mesajı al
+
+                string? formattedTimestamp = null;
+                if (lastMessage != null) // Eğer bir mesaj bulunduysa
+                {
+                    formattedTimestamp = lastMessage.SendAt.ToString("yyyy-MM-dd HH:mm");
+                }
+
+                userListDtos.Add(new UserListDto
+                {
+                    UserId = user.UserId,
+                    Name = user.Name,
+                    avatar = user.avatar,
+                    Email = user.Email,
+                    LastMessageContent = lastMessage?.MessageContent, // Eğer mesaj yoksa null olacak
+                    LastMessageTimestamp = formattedTimestamp // Formatlanmış tarih string'i
+                });
+            }
+
+            return Ok(userListDtos); // Hazırladığımız DTO listesini geri döndürüyoruz
         }
+
 
         [HttpGet("MyContact")]
         public async Task<IActionResult> MyContact()
@@ -58,7 +95,7 @@ namespace TimeProject.Server.Controllers.User
                     user.Surname,
                     user.Email,
                     user.PhoneNumber,
-                    user.ImageUrl,
+                    user.avatar,
                     user.Role,
                 });
             }
@@ -110,7 +147,7 @@ namespace TimeProject.Server.Controllers.User
                         await image.CopyToAsync(stream);
                     }
 
-                    user.ImageUrl = "/images/" + fileName;
+                    user.avatar = "/images/" + fileName;
                 }
 
 
@@ -127,14 +164,34 @@ namespace TimeProject.Server.Controllers.User
 
         //blog oluştur
         [HttpPost("BlogAdd")]
-        public async Task<IActionResult> BlogAdd([FromBody] BlogAddDto newPost)
+        public async Task<IActionResult> BlogAdd([FromForm] BlogAddDto newPost)
         {
             try
             {
+                string? imagePath = null;
+
+                if (newPost.ImageUrl != null && newPost.ImageUrl.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Blog");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(newPost.ImageUrl.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await newPost.ImageUrl.CopyToAsync(stream);
+                    }
+
+                    imagePath = $"/images/Blog/{uniqueFileName}";
+                }
+
                 var blog = new Blog
                 {
                     Title = newPost.Title,
                     Content = newPost.Content,
+                    ImageUrl = imagePath,
                     Date = DateTime.Now
                 };
 
@@ -148,6 +205,7 @@ namespace TimeProject.Server.Controllers.User
                 return StatusCode(500, new { message = "Blog eklenirken hata oluştu", details = ex.Message });
             }
         }
+
 
         // Tüm blogları getir
         [HttpGet("GetBlog")]

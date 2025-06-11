@@ -1,58 +1,163 @@
 ﻿import React from 'react';
-import './MyHelp.css'; // İstersen stil ekleyebilirsin
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+    faQuestionCircle,
+    faBook,
+    faCalendarAlt,
+    faUser,
+    faEnvelope,
+    faShieldAlt,
+    faComments,
+    faCheckCircle,
+    faExclamationCircle,
+    faInfoCircle
+} from '@fortawesome/free-solid-svg-icons';
+import './MyHelp.css';
 
 const Help = () => {
     return (
         <div className="help-container">
-            <h1><i className="fas fa-question-circle"></i> Yardım Sayfası</h1>
+            <div className="help-header">
+                <FontAwesomeIcon icon={faQuestionCircle} className="header-icon" />
+                <h1>Yardım Merkezi</h1>
+                <p className="welcome-text">
+                    Hoş geldiniz! Bu sayfa, uygulamamızı daha iyi anlamanız ve kullanmanız için hazırlanmıştır.
+                </p>
+            </div>
 
-            <p>
-                <strong>Hoş geldiniz!</strong> Bu sayfa, web sitemdeki özellikleri daha iyi anlaman ve kolayca kullanabilmen için hazırlanmıştır.
-            </p>
+            <div className="help-sections">
+                <section className="help-section">
+                    <div className="section-header">
+                        <FontAwesomeIcon icon={faBook} className="section-icon" />
+                        <h2>Site İçeriği ve Özellikleri</h2>
+                    </div>
 
-            <hr />
+                    <div className="feature-cards">
+                        <div className="feature-card">
+                            <div className="feature-icon">
+                                <FontAwesomeIcon icon={faBook} />
+                            </div>
+                            <h3>Blog Yazıları</h3>
+                            <ul>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>Yeni blog yazısı oluşturabilirsiniz</span>
+                                </li>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>Mevcut blogları düzenleyebilirsiniz</span>
+                                </li>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>Blog yazılarını silebilirsiniz</span>
+                                </li>
+                            </ul>
+                        </div>
 
-            <h2>📌 Site İçeriği ve Özellikleri</h2>
+                        <div className="feature-card">
+                            <div className="feature-icon">
+                                <FontAwesomeIcon icon={faCalendarAlt} />
+                            </div>
+                            <h3>Etkinlikler</h3>
+                            <ul>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>Yaklaşan etkinlikleri paylaşabilirsiniz</span>
+                                </li>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>Etkinlik detaylarını görüntüleyebilirsiniz</span>
+                                </li>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>Etkinlikleri kolayca yönetebilirsiniz</span>
+                                </li>
+                            </ul>
+                        </div>
 
-            <h3>📝 Blog Yazıları</h3>
-            <ul>
-                <li><strong>Blog Ekleme:</strong> Yeni bir blog yazısı oluşturabilirsin.</li>
-                <li><strong>Düzenleme:</strong> Daha önce yazdığın blogları düzenleyebilirsin.</li>
-                <li><strong>Silme:</strong> İstemediğin blogları silebilirsin.</li>
-            </ul>
+                        <div className="feature-card">
+                            <div className="feature-icon">
+                                <FontAwesomeIcon icon={faUser} />
+                            </div>
+                            <h3>Profil Yönetimi</h3>
+                            <ul>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>Kişisel bilgilerinizi güncelleyebilirsiniz</span>
+                                </li>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>Profil fotoğrafınızı değiştirebilirsiniz</span>
+                                </li>
+                                <li>
+                                    <FontAwesomeIcon icon={faCheckCircle} />
+                                    <span>İletişim bilgilerinizi düzenleyebilirsiniz</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
 
-            <h3>🎉 Etkinlikler</h3>
-            <ul>
-                <li>Yaklaşan etkinlikleri paylaşabilir, detaylarını görüntüleyebilir ya da kaldırabilirsin.</li>
-                <li>Etkinlik ekleme ve silme işlemleri oldukça kolaydır.</li>
-            </ul>
+                <section className="help-section">
+                    <div className="section-header">
+                        <FontAwesomeIcon icon={faInfoCircle} className="section-icon" />
+                        <h2>Sıkça Sorulan Sorular</h2>
+                    </div>
 
-            <h3>👤 Hakkımda Sayfası</h3>
-            <ul>
-                <li>Kendi bilgilerini (ad, soyad, e-posta, telefon vb.) güncelleyebilirsin.</li>
-                <li>Profil fotoğrafını yükleyebilir veya değiştirebilirsin.</li>
-                <li>Bu bölüm seni tanıtmaya yardımcı olur.</li>
-            </ul>
+                    <div className="faq-cards">
+                        <div className="faq-card">
+                            <div className="faq-question">
+                                <FontAwesomeIcon icon={faQuestionCircle} />
+                                <h3>Blogları kimler görebilir?</h3>
+                            </div>
+                            <div className="faq-answer">
+                                <FontAwesomeIcon icon={faInfoCircle} />
+                                <p>Bloglarınız site ziyaretçileri tarafından görüntülenebilir.</p>
+                            </div>
+                        </div>
 
-            <hr />
+                        <div className="faq-card">
+                            <div className="faq-question">
+                                <FontAwesomeIcon icon={faQuestionCircle} />
+                                <h3>Bilgilerim güvende mi?</h3>
+                            </div>
+                            <div className="faq-answer">
+                                <FontAwesomeIcon icon={faShieldAlt} />
+                                <p>Evet, tüm kullanıcı bilgileriniz güvenli bir şekilde saklanmaktadır.</p>
+                            </div>
+                        </div>
 
-            <h2>❓ Sıkça Sorulan Sorular</h2>
-            <p><strong>1. Blogları kimler görebilir?</strong><br />
-                Blogların site ziyaretçileri tarafından görüntülenebilir.
-            </p>
-            <p><strong>2. Bilgilerim güvende mi?</strong><br />
-                Evet, kullanıcı bilgilerin güvenli şekilde saklanır.
-            </p>
-            <p><strong>3. Yardım alabileceğim başka bir yer var mı?</strong><br />
-                İletişim sayfasından bana ulaşabilirsin.
-            </p>
+                        <div className="faq-card">
+                            <div className="faq-question">
+                                <FontAwesomeIcon icon={faQuestionCircle} />
+                                <h3>Yardım alabileceğim başka bir yer var mı?</h3>
+                            </div>
+                            <div className="faq-answer">
+                                <FontAwesomeIcon icon={faEnvelope} />
+                                <p>İletişim sayfasından bize ulaşabilirsiniz.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-            <hr />
-
-            <h2>💬 Yardımcı Olalım!</h2>
-            <p>
-                Siteyle ilgili herhangi bir sorun yaşarsan veya önerin olursa, lütfen bana ulaşmaktan çekinme.
-            </p>
+                <section className="help-section contact-section">
+                    <div className="section-header">
+                        <FontAwesomeIcon icon={faComments} className="section-icon" />
+                        <h2>Yardımcı Olalım!</h2>
+                    </div>
+                    <div className="contact-card">
+                        <FontAwesomeIcon icon={faComments} className="contact-icon" />
+                        <p>
+                            Uygulamamızla ilgili herhangi bir sorun yaşarsanız veya öneriniz olursa, 
+                            lütfen bizimle iletişime geçmekten çekinmeyin. Size yardımcı olmaktan mutluluk duyarız.
+                        </p>
+                        <button className="contact-button" onClick={() => window.location.href = '/user/iletisim'}>
+                            <FontAwesomeIcon icon={faEnvelope} />
+                            <span>İletişime Geç</span>
+                        </button>
+                    </div>
+                </section>
+            </div>
         </div>
     );
 };
