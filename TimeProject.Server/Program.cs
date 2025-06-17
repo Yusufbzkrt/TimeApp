@@ -65,6 +65,9 @@ builder.Services.AddSignalR();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<EmailService>();
 
+// Reports
+builder.Services.AddScoped<ReportsService>();
+
 
 // CORS yapılandırması
 builder.Services.AddCors(options =>

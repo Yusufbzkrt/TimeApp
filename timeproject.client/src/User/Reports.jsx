@@ -21,29 +21,27 @@ const Reports = () => {
     const [timeRange, setTimeRange] = useState('week');
     const [selectedMetric, setSelectedMetric] = useState('productivity');
     const [stats, setStats] = useState({
-        productivity: 85,
-        tasksCompleted: 24,
-        timeSpent: 42,
-        efficiency: 78
+        productivity: 0,
+        tasksCompleted: 0,
+        timeSpent: 0,
+        efficiency: 0
     });
 
-    // Örnek veri
     const [reportData, setReportData] = useState({
         productivity: {
-            labels: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
-            data: [75, 82, 88, 85, 90, 65, 70]
+            labels: [],
+            data: []
         },
         tasks: {
-            labels: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
-            data: [5, 7, 4, 6, 8, 3, 2]
+            labels: [],
+            data: []
         },
         timeSpent: {
-            labels: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
-            data: [6, 7, 5, 8, 6, 4, 3]
+            labels: [],
+            data: []
         }
     });
 
-    // Örnek trend verileri
     const [trends, setTrends] = useState([
         {
             id: 1,
@@ -71,44 +69,138 @@ const Reports = () => {
         }
     ]);
 
-    // Örnek aktivite verileri
-    const [activities, setActivities] = useState([
-        {
-            id: 1,
-            title: 'Proje Planlaması',
-            duration: '2.5 saat',
-            efficiency: 92,
-            date: '2024-03-15'
-        },
-        {
-            id: 2,
-            title: 'Toplantı',
-            duration: '1 saat',
-            efficiency: 85,
-            date: '2024-03-14'
-        },
-        {
-            id: 3,
-            title: 'Rapor Hazırlama',
-            duration: '3 saat',
-            efficiency: 88,
-            date: '2024-03-13'
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Verileri API'den çek
+    const fetchReportData = async () => {
+        try {
+            setLoading(true);
+            const authToken = localStorage.getItem("authToken");
+            if (!authToken) {
+                throw new Error('Oturum süresi dolmuş');
+            }
+
+            // İstatistikleri çek
+            const statsResponse = await fetch(`https://localhost:7120/api/Reports/stats?timeRange=${timeRange}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            if (!statsResponse.ok) {
+                throw new Error('İstatistikler alınamadı');
+            }
+
+            const statsData = await statsResponse.json();
+            setStats(statsData);
+
+            // Trend verilerini çek
+            const trendsResponse = await fetch(`https://localhost:7120/api/Reports/trends?timeRange=${timeRange}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            if (!trendsResponse.ok) {
+                throw new Error('Trend verileri alınamadı');
+            }
+
+            const trendsData = await trendsResponse.json();
+            // Backend'den gelen verileri ikonlarla eşleştir
+            const processedTrends = trendsData.map(trend => ({
+                ...trend,
+                icon: trend.icon === 'faArrowUp' ? faArrowUp :
+                      trend.icon === 'faTasks' ? faTasks :
+                      trend.icon === 'faClock' ? faClock :
+                      trend.icon === 'faArrowDown' ? faArrowDown :
+                      faInfoCircle // varsayılan ikon
+            }));
+            setTrends(processedTrends);
+
+            // Aktivite verilerini çek
+            const activitiesResponse = await fetch(`https://localhost:7120/api/Reports/activities?timeRange=${timeRange}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            if (!activitiesResponse.ok) {
+                throw new Error('Aktivite verileri alınamadı');
+            }
+
+            const activitiesData = await activitiesResponse.json();
+            setActivities(activitiesData);
+
+            // Grafik verilerini çek
+            const chartResponse = await fetch(`https://localhost:7120/api/Reports/chart?metric=${selectedMetric}&timeRange=${timeRange}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            if (!chartResponse.ok) {
+                throw new Error('Grafik verileri alınamadı');
+            }
+
+            const chartData = await chartResponse.json();
+            setReportData(prevData => ({
+                ...prevData,
+                [selectedMetric]: chartData
+            }));
+
+            setError(null);
+        } catch (err) {
+            console.error('Veri çekme hatası:', err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
-    ]);
+    };
+
+    useEffect(() => {
+        fetchReportData();
+    }, [timeRange, selectedMetric]);
 
     const handleTimeRangeChange = (range) => {
         setTimeRange(range);
-        // Burada API'den yeni veri çekilebilir
     };
 
     const handleMetricChange = (metric) => {
         setSelectedMetric(metric);
-        // Burada seçilen metriğe göre grafik güncellenebilir
     };
 
-    const handleDownloadReport = () => {
-        // Rapor indirme işlemi simülasyonu
-        console.log('Rapor indiriliyor...');
+    const handleDownloadReport = async () => {
+        try {
+            const authToken = localStorage.getItem("authToken");
+            if (!authToken) {
+                throw new Error('Oturum süresi dolmuş');
+            }
+
+            const response = await fetch(`https://localhost:7120/api/Reports/download?timeRange=${timeRange}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Rapor indirilemedi');
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rapor-${timeRange}-${new Date().toISOString().split('T')[0]}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (err) {
+            console.error('Rapor indirme hatası:', err);
+            alert('Rapor indirilirken bir hata oluştu');
+        }
     };
 
     const getEfficiencyColor = (efficiency) => {
@@ -117,6 +209,29 @@ const Reports = () => {
         if (efficiency >= 60) return '#F59E0B';
         return '#EF4444';
     };
+
+    if (loading) {
+        return (
+            <div className="reports-container">
+                <div className="loading-message">
+                    <FontAwesomeIcon icon={faChartLine} spin size="2x" />
+                    <p>Raporlar yükleniyor...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="reports-container">
+                <div className="error-message">
+                    <FontAwesomeIcon icon={faInfoCircle} size="2x" />
+                    <p>{error}</p>
+                    <button onClick={fetchReportData}>Tekrar Dene</button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="reports-container">
@@ -199,10 +314,22 @@ const Reports = () => {
                         </div>
                     </div>
                     <div className="metric-chart">
-                        {/* Burada gerçek bir grafik kütüphanesi kullanılabilir (Chart.js, Recharts vb.) */}
                         <div className="chart-placeholder">
                             <FontAwesomeIcon icon={faChartLine} size="3x" />
                             <p>Grafik görünümü</p>
+                            <div className="chart-data">
+                                {reportData[selectedMetric].labels.map((label, index) => (
+                                    <div key={label} className="chart-bar">
+                                        <div 
+                                            className="bar-fill"
+                                            style={{ 
+                                                height: `${(reportData[selectedMetric].data[index] / Math.max(...reportData[selectedMetric].data)) * 100}%` 
+                                            }}
+                                        />
+                                        <span className="bar-label">{label}</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -258,29 +385,21 @@ const Reports = () => {
                 <div className="activities-list">
                     {activities.map(activity => (
                         <div key={activity.id} className="activity-card">
-                            <div className="activity-info">
+                            <div className="activity-header">
                                 <h3>{activity.title}</h3>
-                                <div className="activity-meta">
-                                    <span>
-                                        <FontAwesomeIcon icon={faClock} />
-                                        {activity.duration}
-                                    </span>
-                                    <span>
-                                        <FontAwesomeIcon icon={faCalendarAlt} />
-                                        {activity.date}
-                                    </span>
-                                </div>
+                                <span className="activity-date">{new Date(activity.date).toLocaleDateString('tr-TR')}</span>
                             </div>
-                            <div className="activity-efficiency">
-                                <div 
-                                    className="efficiency-circle"
-                                    style={{ 
-                                        background: `conic-gradient(${getEfficiencyColor(activity.efficiency)} ${activity.efficiency * 3.6}deg, transparent 0deg)`
-                                    }}
-                                >
-                                    <span>{activity.efficiency}%</span>
+                            <div className="activity-details">
+                                <div className="activity-duration">
+                                    <FontAwesomeIcon icon={faClock} />
+                                    <span>{activity.duration}</span>
                                 </div>
-                                <span className="efficiency-label">Verimlilik</span>
+                                <div className="activity-efficiency">
+                                    <FontAwesomeIcon icon={faChartLine} />
+                                    <span style={{ color: getEfficiencyColor(activity.efficiency) }}>
+                                        {activity.efficiency}%
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     ))}
