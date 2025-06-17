@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faPlus, 
-    faCheck, 
-    faTrash, 
-    faEdit, 
-    faClock, 
+import {
+    faPlus,
+    faCheck,
+    faTrash,
+    faEdit,
+    faClock,
     faCalendarAlt,
     faFilter,
     faSort,
@@ -19,7 +19,7 @@ const Task = () => {
     const [newTask, setNewTask] = useState({
         title: '',
         description: '',
-        dueDate: '',
+        dueDate: new Date().toISOString().split('T')[0],
         priority: 'normal',
         status: 'pending'
     });
@@ -42,6 +42,7 @@ const Task = () => {
             }
 
             const data = await res.json();
+            console.log("📥 Backend'den gelen görevler:", data); // Backend'den gelen veriyi kontrol et
             setTasks(data);
         } catch (err) {
             console.error('Görevler yüklenirken hata:', err);
@@ -52,61 +53,97 @@ const Task = () => {
         fetchTasks();
     }, []);
 
-    // Görev ekleme/güncelleme
     const handleTaskSubmit = async (e) => {
         e.preventDefault();
 
-        const taskData = {
-            TaskName: newTask.title,
-            Description: newTask.description,
-            DueDate: newTask.dueDate,
-            Priority: newTask.priority,
-            Status: newTask.status,
-        };
-
-        // 🧪 Debug log
-        console.log("🔼 Gönderilecek taskData:", taskData);
-        console.log("📌 newTask state'i:", newTask);
-
-        const url = editingTask
-            ? `https://localhost:7120/api/Task/${editingTask.taskId}`
-            : 'https://localhost:7120/api/Task/add';
-
-        const method = editingTask ? 'PUT' : 'POST';
+        if (!newTask.title.trim() || !newTask.description.trim() || !newTask.dueDate) {
+            alert('Tüm alanları doldurmanız gerekiyor.');
+            return;
+        }
 
         try {
-            const res = await fetch(url, {
-                method: method,
+            const authToken = localStorage.getItem("authToken");
+            if (!authToken) {
+                alert('Oturum süresi dolmuş.');
+                return;
+            }
+
+            const tokenPayload = JSON.parse(atob(authToken.split('.')[1]));
+            const userId = parseInt(tokenPayload["nameid"]);
+            const createdBy = tokenPayload["email"] || "Anonymous";
+
+            const taskData = {
+                taskID: editingTask?.taskID || 0,
+                taskName: newTask.title.trim(),
+                description: newTask.description.trim(),
+                dueDate: new Date(newTask.dueDate).toISOString(),
+                priority: newTask.priority.toLowerCase(),
+                status: newTask.status.toLowerCase(),
+                userId: userId,
+                createdByUserName: createdBy
+            };
+
+            console.log("📤 Gönderilen veri:", JSON.stringify(taskData, null, 2));
+
+            // Düzenleme veya ekleme için farklı endpoint'ler kullan
+            const endpoint = editingTask 
+                ? `https://localhost:7120/api/Task/${editingTask.taskID}`  // Düzenleme için
+                : 'https://localhost:7120/api/Task/add';                   // Ekleme için
+
+            const res = await fetch(endpoint, {
+                method: editingTask ? 'PUT' : 'POST',  // Düzenleme için PUT, ekleme için POST
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                    'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify(taskData),
+                body: JSON.stringify(taskData)
             });
 
-            if (res.ok) {
-                alert(editingTask ? 'Görev güncellendi!' : 'Görev eklendi!');
-                setShowTaskForm(false);
-                setEditingTask(null);
-                fetchTasks();
-                resetForm();
-            } else {
-                const errorData = await res.json();
-                console.error("❌ API hata yanıtı:", errorData); // 🧪 log buraya da ekle
-                alert(`Hata: ${errorData.message || 'Bir hata oluştu'}`);
+            const responseText = await res.text();
+            console.log("📥 API yanıtı (ham):", responseText);
+
+            let responseData;
+            try {
+                responseData = JSON.parse(responseText);
+            } catch (e) {
+                responseData = { message: "API yanıtı JSON formatında değil" };
             }
+
+            if (!res.ok) {
+                if (responseData.errors) {
+                    const errorMessages = Object.entries(responseData.errors)
+                        .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+                        .join('\n');
+                    alert(`Validasyon hataları:\n${errorMessages}`);
+                } else {
+                    alert(responseData.message || 'İşlem sırasında bir hata oluştu');
+                }
+                return;
+            }
+
+            alert(editingTask ? 'Görev başarıyla güncellendi!' : 'Görev başarıyla eklendi!');
+            setShowTaskForm(false);
+            setEditingTask(null);  // Düzenleme modunu kapat
+            fetchTasks();
+            resetForm();
+
         } catch (err) {
-            console.error('Görev işlemi sırasında hata:', err);
+            console.error('Hata:', err);
             alert('Bir hata oluştu. Lütfen tekrar deneyin.');
         }
     };
 
 
     // Görev silme
-    const handleDeleteTask = async (taskId) => {
+    const handleDeleteTask = async (taskID) => {
+        if (!taskID) {
+            console.error('Silinecek görev ID\'si bulunamadı');
+            return;
+        }
+
         if (window.confirm('Bu görevi silmek istediğinizden emin misiniz?')) {
             try {
-                const res = await fetch(`https://localhost:7120/api/Task/${taskId}`, {
+                const res = await fetch(`https://localhost:7120/api/Task/${taskID}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
@@ -117,7 +154,8 @@ const Task = () => {
                     alert('Görev silindi!');
                     fetchTasks();
                 } else {
-                    alert('Görev silinirken bir hata oluştu.');
+                    const errorData = await res.json();
+                    alert(errorData.message || 'Görev silinirken bir hata oluştu.');
                 }
             } catch (err) {
                 console.error('Görev silinirken hata:', err);
@@ -127,26 +165,31 @@ const Task = () => {
     };
 
     // Görev durumunu güncelleme
-    const handleStatusChange = async (taskId, newStatus) => {
+    const handleStatusChange = async (taskID, newStatus) => {
         try {
-            const task = tasks.find(t => t.taskId === taskId);
-            const res = await fetch(`https://localhost:7120/api/Task/${taskId}`, {
+            if (!taskID) {
+                alert('Görev bulunamadı!');
+                return;
+            }
+
+            const res = await fetch(`https://localhost:7120/api/Task/${taskID}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
                 },
-                body: JSON.stringify({
-                    ...task,
-                    Status: newStatus
-                }),
+                body: JSON.stringify({ Status: newStatus }), 
             });
 
             if (res.ok) {
                 fetchTasks();
+            } else {
+                const errorData = await res.json();
+                alert(errorData.message || 'Durum güncellenirken bir hata oluştu.');
             }
         } catch (err) {
             console.error('Durum güncellenirken hata:', err);
+            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
         }
     };
 
@@ -155,7 +198,7 @@ const Task = () => {
         setNewTask({
             title: '',
             description: '',
-            dueDate: '',
+            dueDate: new Date().toISOString().split('T')[0],
             priority: 'normal',
             status: 'pending'
         });
@@ -177,6 +220,7 @@ const Task = () => {
     // Filtreleme ve sıralama
     const filteredTasks = tasks
         .filter(task => {
+            if (!task) return false;
             if (filter === 'all') return true;
             if (filter === 'pending') return task.status === 'pending';
             if (filter === 'completed') return task.status === 'completed';
@@ -201,7 +245,7 @@ const Task = () => {
         <div className="task-container">
             <div className="task-header">
                 <h1>Görevlerim</h1>
-                <button 
+                <button
                     className="add-task-button"
                     onClick={() => {
                         setEditingTask(null);
@@ -227,8 +271,8 @@ const Task = () => {
                 <div className="filter-sort-controls">
                     <div className="filter-group">
                         <FontAwesomeIcon icon={faFilter} />
-                        <select 
-                            value={filter} 
+                        <select
+                            value={filter}
                             onChange={(e) => setFilter(e.target.value)}
                         >
                             <option value="all">Tümü</option>
@@ -239,8 +283,8 @@ const Task = () => {
 
                     <div className="sort-group">
                         <FontAwesomeIcon icon={faSort} />
-                        <select 
-                            value={sortBy} 
+                        <select
+                            value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
                         >
                             <option value="dueDate">Tarihe Göre</option>
@@ -254,7 +298,7 @@ const Task = () => {
             <div className="task-list">
                 {filteredTasks.map(task => (
                     <div 
-                        key={task.taskId} 
+                        key={task.taskID} 
                         className={`task-card ${task.status === 'completed' ? 'completed' : ''} priority-${task.priority}`}
                     >
                         <div className="task-header">
@@ -268,14 +312,14 @@ const Task = () => {
                                 </button>
                                 <button 
                                     className="action-button delete"
-                                    onClick={() => handleDeleteTask(task.taskId)}
+                                    onClick={() => handleDeleteTask(task.taskID)}
                                 >
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
                                 <button 
                                     className={`action-button complete ${task.status === 'completed' ? 'completed' : ''}`}
                                     onClick={() => handleStatusChange(
-                                        task.taskId, 
+                                        task.taskID, 
                                         task.status === 'completed' ? 'pending' : 'completed'
                                     )}
                                 >
@@ -305,6 +349,7 @@ const Task = () => {
                     </div>
                 ))}
             </div>
+
 
             {showTaskForm && (
                 <div className="task-form-modal">
@@ -360,8 +405,8 @@ const Task = () => {
                                 <button type="submit" className="submit-button">
                                     {editingTask ? 'Güncelle' : 'Kaydet'}
                                 </button>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className="cancel-button"
                                     onClick={() => {
                                         setShowTaskForm(false);

@@ -11,7 +11,6 @@ namespace TimeProject.Server.Data
         public TimeProjectDbContext(DbContextOptions options) : base(options)
         {
         }
-        public DbSet<AccountStatus> AccountStatuses { get; set; }
         public DbSet<Credits> Credits { get; set; }
         public DbSet<Events> Events { get; set; }
         public DbSet<Messages> Messages { get; set; }
@@ -21,8 +20,10 @@ namespace TimeProject.Server.Data
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Blog> Blog { get; set; }
-        public DbSet<TaskModel> TaskModel { get; set; }
+        public DbSet<Tasks> Tasks { get; set; }
         public DbSet<EventParticipant> EventParticipants { get; set; }
+        public DbSet<EmailSettings> EmailSettings { get; set; }
+        public DbSet<Document> Documents { get; set; } 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,9 +42,9 @@ namespace TimeProject.Server.Data
                 .WithMany(u => u.Events)
                 .HasForeignKey(e => e.CreatedByUserID);
 
-            modelBuilder.Entity<TaskModel>()
+            modelBuilder.Entity<Tasks>()
     .HasOne(t => t.User)
-    .WithMany() // Eğer User sınıfında ICollection<TaskModel> Tasks yoksa
+    .WithMany() 
     .HasForeignKey(t => t.UserId)
     .OnDelete(DeleteBehavior.Cascade);
 
@@ -52,7 +53,7 @@ namespace TimeProject.Server.Data
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new TaskConfiguration());
+           // modelBuilder.ApplyConfiguration(new TaskConfiguration());
         }
     }
 }

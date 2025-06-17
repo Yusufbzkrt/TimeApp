@@ -38,13 +38,20 @@ namespace TimeProject.Server.Controllers
             {
                 return BadRequest(new { message = "Geçersiz giriş verisi." });
             }
-
-            var existingUser = await _context.User.FirstOrDefaultAsync(u => u.Email == registerDto.Email);
-            if (existingUser != null)
+            try
             {
-                return BadRequest(new { message = "Bu email adresi zaten kayıtlı." });
-            }
+                var existingUser = await _context.User.FirstOrDefaultAsync(u => u.Email == registerDto.Email);
+                if (existingUser != null)
+                {
+                    return BadRequest(new { message = "Bu email adresi zaten kayıtlı." });
+                }
 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Beklenmeyen hata: " + ex.Message });
+            }
+          
             var user = new Model.User
             {
                 Name = registerDto.FirstName,

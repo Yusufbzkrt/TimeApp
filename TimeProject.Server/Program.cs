@@ -6,6 +6,8 @@ using System.Text;
 using TimeProject.Server;
 using TimeProject.Server.Data;
 using TimeProject.Server.Hubs;
+using TimeProject.Server.Model;
+using TimeProject.Server.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,18 +61,25 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
+//email services
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<EmailService>();
+
 
 // CORS yapılandırması
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin", policy =>
-    {
-        policy.WithOrigins("https://localhost:5173") 
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();  
-    });
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder
+                .WithOrigins("https://localhost:5173") 
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
 });
+
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -94,7 +103,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 // CORS Middleware
-app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowAll");
 
 app.UseSession();
 

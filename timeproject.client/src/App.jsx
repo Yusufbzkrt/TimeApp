@@ -27,34 +27,42 @@ import Report from './User/Reports';
 import AllEvents from './HomePage/AllEvents';
 import JoinForm from './HomePage/JoinForm';
 import ResetPassword from './Auth/ResetPassword';
+import ContactForm from './User/ContactForm';
+import Events from './User/Events';
+import BlogList from './HomePage/BlogList';
+import HelpPage from './HomePage/HelpPage';
+import HomePageLayout from './HomePage/HomePageLayout';
+import AllBlog from './User/AllBlog';
+
 function App() {
     return (
         <ThemeProvider>
             <NotificationProvider>
                 <Router>
                     <Routes>
-                        <Route path="/" element={<HomePage />} />
+                        <Route path="/" element={<HomePageLayout />}>
+                            <Route index element={<HomePage />} />
+                            <Route path="about" element={<About />} />
+                            <Route path="AllEvents" element={<AllEvents />} />
+                            <Route path="contact" element={<ContactForm />} />
+                            <Route path="HelpPage" element={<HelpPage />} />
+                            <Route path="BlogList" element={<BlogList />} />
+                        </Route>
+
+                      
 
                         <Route path="/login" element={<Login />} />
-                        
                         <Route path="/register" element={<Register />} />
-
-                        <Route path="/chat" element={<MessageComponent />} />
-
-                        <Route path="/about" element={<About />} />
-
-                        <Route path="mycontactedit" element={<MyContactEdit />} />
-                        <Route path="AllEvents" element={<AllEvents />} />
+                       
                         <Route path="/join/:eventId" element={<JoinForm />} />
                         <Route path="reset-password" element={<ResetPassword />} />
 
-
-
-                        <Route path="/user" element={<UserLayout />}>
+                        <Route path="/" element={<UserLayout />}>
                             <Route path="/user/home" element={<UserHomePage />} />
                             <Route path="/user/blog" element={<MyBlog />} />
                             <Route path="/user/blog/edit/:blogId" element={<MyBlogEdit />} />
                             <Route path="/user/iletisim" element={<MyContact />} />
+                            <Route path="/MyContactEdit" element={<MyContactEdit />} />
                             <Route path="/user/yardim" element={<MyHelp />} />
                             <Route path="myservices" element={<MyServices />} />
                             <Route path="/user/etkinlikler" element={<Etkinlikler />} />
@@ -64,6 +72,9 @@ function App() {
                             <Route path="/user/calendar" element={<Calendar />} />
                             <Route path="/user/task" element={<Task />} />
                             <Route path="/user/reports" element={<Report />} />
+                            <Route path="/chat" element={<MessageComponent />} />
+                            <Route path="Events" element={<Events />} />
+                            <Route path="blogs" element={<AllBlog />} />
                         </Route>
                     </Routes>
                 </Router>

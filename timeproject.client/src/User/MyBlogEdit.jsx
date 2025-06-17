@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faBlog, 
-    faEdit, 
+import {
+    faBlog,
+    faEdit,
     faSpinner,
     faExclamationCircle,
     faArrowLeft,
     faSave,
-    faTimes
+    faTimes,
+    faImage,
+    faUpload
 } from '@fortawesome/free-solid-svg-icons';
 import "./MyBlogEdit.css";
 
@@ -16,7 +18,14 @@ const MyBlogEdit = () => {
     const { blogId } = useParams();
     const navigate = useNavigate();
     const [blog, setBlog] = useState(null);
-    const [form, setForm] = useState({ title: '', content: '', blogId:' ' });
+    const [form, setForm] = useState({ 
+        title: '', 
+        content: '', 
+        blogId: '',
+        imageUrl: '',
+        imageFile: null 
+    });
+    const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [saving, setSaving] = useState(false);
@@ -25,7 +34,11 @@ const MyBlogEdit = () => {
         const fetchBlog = async () => {
             try {
                 setLoading(true);
-                const res = await fetch(`https://localhost:7120/api/User/GetBlog/${blogId}`);
+                const res = await fetch(`https://localhost:7120/api/User/GetBlog/${blogId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                    }
+                });
                 if (!res.ok) {
                     throw new Error('Blog yüklenirken bir hata oluştu.');
                 }
@@ -34,7 +47,9 @@ const MyBlogEdit = () => {
                 setForm({
                     title: data.title,
                     content: data.content,
-                    blogId: data.blogId
+                    blogId: data.blogId,
+                    imageUrl: data.imageUrl || '',
+                    imageFile: null
                 });
                 setError(null);
             } catch (err) {
@@ -50,28 +65,57 @@ const MyBlogEdit = () => {
         }
     }, [blogId]);
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setForm(prev => ({ ...prev, imageFile: file }));
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            setSaving(true);
-            const res = await fetch(`https://localhost:7120/api/User/MyBlogEdit/${blogId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
+            const formData = new FormData();
+            formData.append('Title', form.title);
+            formData.append('Content', form.content);
+            formData.append('BlogId', form.blogId);
+            if (form.imageFile) {
+                formData.append('ImageUrl', form.imageFile);
+            }
+
+            console.log('Gönderilen veriler:', {
+                title: form.title,
+                content: form.content,
+                blogId: form.blogId,
+                imageUrl: form.imageUrl,
+                hasImage: !!form.imageFile
             });
 
-            if (res.ok) {
-                alert('Blog başarıyla güncellendi!');
-                navigate('/user/blog');
-            } else {
-                const data = await res.json();
-                throw new Error(data.message || 'Blog güncellenirken bir hata oluştu.');
+            const res = await fetch(`https://localhost:7120/api/User/MyBlogEdit/${blogId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                },
+                body: formData
+            });
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error('Sunucu yanıtı:', errorText);
+                throw new Error(`Sunucu hatası: ${res.status} - ${errorText}`);
             }
+
+            alert('Blog başarıyla güncellendi!');
+            navigate('/user/blog');
         } catch (err) {
             console.error('Güncelleme hatası:', err);
-            alert(err.message);
-        } finally {
-            setSaving(false);
+            setError(err.message);
+            alert(`Güncelleme hatası: ${err.message}`);
         }
     };
 
@@ -154,9 +198,53 @@ const MyBlogEdit = () => {
                         required
                     ></textarea>
                 </div>
+
+                <div className="form-group">
+                    <label>
+                        <FontAwesomeIcon icon={faImage} /> Blog Görseli
+                    </label>
+                    <div className="image-upload">
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            id="blog-image"
+                            className="file-input"
+                        />
+                        <label htmlFor="blog-image" className="file-input-label">
+                            <FontAwesomeIcon icon={faUpload} />
+                            <span>Görsel Seç</span>
+                        </label>
+                    </div>
+
+                    {form.imageUrl && !form.imageFile && (
+                        <div className="current-image-preview">
+                            <h3>Mevcut Görsel</h3>
+                            <div className="image-container">
+                                <img
+                                    src={`https://localhost:7120${form.imageUrl}`}
+                                    alt="Mevcut Blog Görseli"
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {imagePreview && (
+                        <div className="new-image-preview">
+                            <h3>Yeni Görsel Önizleme</h3>
+                            <div className="image-container">
+                                <img
+                                    src={imagePreview}
+                                    alt="Yeni Blog Görseli"
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+
                 <div className="form-actions">
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         className="cancel-button"
                         onClick={handleCancel}
                         disabled={saving}
@@ -164,8 +252,8 @@ const MyBlogEdit = () => {
                         <FontAwesomeIcon icon={faTimes} />
                         <span>İptal</span>
                     </button>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="save-button"
                         disabled={saving}
                     >

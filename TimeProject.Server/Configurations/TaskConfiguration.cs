@@ -5,12 +5,12 @@ using TimeProject.Models;
 
 namespace TimeProject.Server.Configurations
 {
-    public class TaskConfiguration : IEntityTypeConfiguration<TaskModel>
+    public class TaskConfiguration : IEntityTypeConfiguration<Models.Tasks>
     {
-        public void Configure(EntityTypeBuilder<TaskModel> builder)
+        public void Configure(EntityTypeBuilder<Models.Tasks> builder)
         {
             builder.HasData(
-                new TaskModel { TaskID = 1, TaskName = "Ödev", Description="Ödevi yap", Priority="Normal", Status = "pending", UserId=8 }
+                new Tasks { TaskID = 1, TaskName = "Ödev", Description="Ödevi yap", Priority="Normal", Status = "pending", UserId=8 }
             );
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Nest;
 using System.Security.Claims;
 using TimeProject.Server.Data;
 using TimeProject.Server.Model;
@@ -13,10 +14,12 @@ namespace TimeProject.Server.Controllers.User
     public class UserController : ControllerBase
     {
         private readonly TimeProjectDbContext _context;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(TimeProjectDbContext context)
+        public UserController(TimeProjectDbContext context, ILogger<UserController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -95,6 +98,7 @@ namespace TimeProject.Server.Controllers.User
                     user.Surname,
                     user.Email,
                     user.PhoneNumber,
+                    user.Credit,
                     user.avatar,
                     user.Role,
                 });
@@ -170,21 +174,17 @@ namespace TimeProject.Server.Controllers.User
             {
                 string? imagePath = null;
 
-                if (newPost.ImageUrl != null && newPost.ImageUrl.Length > 0)
+                if (newPost.ImageUrl != null)
                 {
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Blog");
-                    if (!Directory.Exists(uploadsFolder))
-                        Directory.CreateDirectory(uploadsFolder);
-
-                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(newPost.ImageUrl.FileName);
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    var fileName = Guid.NewGuid() + Path.GetExtension(newPost.ImageUrl.FileName);
+                    var filePath = Path.Combine("wwwroot", "images", fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await newPost.ImageUrl.CopyToAsync(stream);
                     }
 
-                    imagePath = $"/images/Blog/{uniqueFileName}";
+                    imagePath = $"/images/{fileName}";
                 }
 
                 var blog = new Blog
@@ -251,7 +251,7 @@ namespace TimeProject.Server.Controllers.User
         }
 
         [HttpPut("MyBlogEdit/{BlogId}")]
-        public async Task<IActionResult> MyBlogEdit(int BlogId, [FromBody] Blog updatedBlog)
+        public async Task<IActionResult> MyBlogEdit(int BlogId, [FromForm] BlogUpdateDto updatedBlog)
         {
             if (BlogId != updatedBlog.BlogId)
             {
@@ -267,13 +267,62 @@ namespace TimeProject.Server.Controllers.User
             blog.Title = updatedBlog.Title;
             blog.Content = updatedBlog.Content;
 
+            if (updatedBlog.ImageUrl != null)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(updatedBlog.ImageUrl.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await updatedBlog.ImageUrl.CopyToAsync(stream);
+                }
+
+                blog.ImageUrl = $"/images/{fileName}";
+            }
+
             _context.Blog.Update(blog);
             await _context.SaveChangesAsync();
 
             return Ok("Blog başarıyla güncellendi.");
         }
 
+        [HttpGet("credit")]
+        public async Task<ActionResult<UserCreditDto>> GetUserCredit()
+        {
+            try
+            {
+                // Kullanıcı ID'sini al
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized("Kullanıcı kimliği bulunamadı.");
+                }
 
+                // Kullanıcıyı veritabanından bul
+                var user = await _context.User
+                    .FirstOrDefaultAsync(u => u.UserId == int.Parse(userId));
+
+                if (user == null)
+                {
+                    return NotFound("Kullanıcı bulunamadı.");
+                }
+
+                // Kredi bilgisini döndür
+                return Ok(new UserCreditDto
+                {
+                    Credit = user.Credit
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kullanıcı kredisi alınırken hata oluştu.");
+                return StatusCode(500, "Kredi bilgisi alınırken bir hata oluştu.");
+            }
+        }
 
     }
 

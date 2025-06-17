@@ -16,7 +16,7 @@ namespace TimeProject.Server.Model
         public Role? Role { get; set; }
         public bool TestResult { get; set; }
         public string? AccountStatusId { get; set; }
-        public AccountStatus? AccountStatus { get; set; }
+        public int Credit { get; set; }
         public DateTime CreateDate { get; set; }
         public ICollection<Events>? Events { get; set; }
         public ICollection<Services>? UserServices { get; set; }

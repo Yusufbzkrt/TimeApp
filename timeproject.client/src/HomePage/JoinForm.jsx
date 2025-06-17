@@ -9,7 +9,8 @@ import {
     faClock,
     faUsers,
     faArrowLeft,
-    faExclamationCircle
+    faExclamationCircle,
+    faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import './JoinForm.css';
 
@@ -21,6 +22,7 @@ const JoinForm = () => {
         email: ''
     });
     const [eventDetails, setEventDetails] = useState(null);
+    const [userCredit, setUserCredit] = useState(0);
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -38,7 +40,31 @@ const JoinForm = () => {
             }
         };
 
+        const fetchUserCredit = async () => {
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    setError('Oturum açmanız gerekmektedir');
+                    return;
+                }
+
+                const response = await fetch('https://localhost:7120/api/user/credit', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Kredi bilgisi alınamadı');
+                const data = await response.json();
+                setUserCredit(data.credit);
+            } catch (err) {
+                console.error('Kredi bilgisi alınırken hata:', err);
+                setError('Kredi bilgisi alınamadı');
+            }
+        };
+
         fetchEventDetails();
+        fetchUserCredit();
     }, [eventId]);
 
     const handleChange = (e) => {
@@ -56,10 +82,20 @@ const JoinForm = () => {
         setMessage('');
 
         try {
+            // Kredi kontrolü
+            if (eventDetails.credit > userCredit) {
+                setError(`Bu etkinliğe katılmak için yeterli krediniz bulunmamaktadır. 
+                         Gerekli kredi: ${eventDetails.credit}, 
+                         Mevcut krediniz: ${userCredit}`);
+                setLoading(false);
+                return;
+            }
+
             const response = await fetch('https://localhost:7120/api/eventparticipant/join', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                 },
                 body: JSON.stringify({
                     eventId: parseInt(eventId),
@@ -74,10 +110,9 @@ const JoinForm = () => {
                 throw new Error(data.message || 'Bir hata oluştu');
             }
 
-            setMessage(data.message);
+            setMessage('Etkinliğe başarıyla katıldınız!');
             setFormData({ name: '', email: '' });
             
-            // Başarılı kayıt sonrası 2 saniye bekleyip etkinlikler sayfasına yönlendir
             setTimeout(() => {
                 navigate('/AllEvents');
             }, 2000);
@@ -130,7 +165,25 @@ const JoinForm = () => {
                                 <FontAwesomeIcon icon={faUsers} />
                                 <span>{eventDetails.currentParticipants}/{eventDetails.capacity} Katılımcı</span>
                             </div>
+                            <div className="detail-item credit-info">
+                                <FontAwesomeIcon icon={faClock} />
+                                <span>Gereken Kredi: {eventDetails.credit}</span>
+                            </div>
+                            <div className="detail-item credit-info">
+                                <FontAwesomeIcon icon={faClock} />
+                                <span>Mevcut Krediniz: {userCredit}</span>
+                            </div>
                         </div>
+
+                        {eventDetails.credit > userCredit && (
+                            <div className="credit-warning">
+                                <FontAwesomeIcon icon={faExclamationCircle} />
+                                <p>Bu etkinliğe katılmak için yeterli krediniz bulunmamaktadır.</p>
+                                <p>Gereken Kredi: {eventDetails.credit}</p>
+                                <p>Mevcut Krediniz: {userCredit}</p>
+                            </div>
+                        )}
+
                         <div className="event-progress">
                             <div 
                                 className="progress-bar"
@@ -140,68 +193,72 @@ const JoinForm = () => {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="join-form">
-                    <h3>Etkinliğe Katıl</h3>
-                    
-                    <div className="form-group">
-                        <label htmlFor="name">
-                            <FontAwesomeIcon icon={faUser} />
-                            <span>Adınız Soyadınız</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            placeholder="Adınızı ve soyadınızı girin"
-                            required
-                        />
+                {message && (
+                    <div className="success-message">
+                        <FontAwesomeIcon icon={faCheckCircle} />
+                        <p>{message}</p>
                     </div>
+                )}
 
-                    <div className="form-group">
-                        <label htmlFor="email">
-                            <FontAwesomeIcon icon={faEnvelope} />
-                            <span>E-posta Adresiniz</span>
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="E-posta adresinizi girin"
-                            required
-                        />
+                {error && (
+                    <div className="error-message">
+                        <FontAwesomeIcon icon={faExclamationCircle} />
+                        <p>{error}</p>
                     </div>
+                )}
 
-                    {error && (
-                        <div className="error-message">
-                            <p>{error}</p>
+                {!message && eventDetails && eventDetails.credit <= userCredit && (
+                    <form onSubmit={handleSubmit} className="join-form">
+                        <h3>Etkinliğe Katıl</h3>
+                        
+                        <div className="form-group">
+                            <label htmlFor="name">
+                                <FontAwesomeIcon icon={faUser} />
+                                <span>Adınız Soyadınız</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                placeholder="Adınızı ve soyadınızı girin"
+                                required
+                            />
                         </div>
-                    )}
 
-                    {message && (
-                        <div className="success-message">
-                            <p>{message}</p>
+                        <div className="form-group">
+                            <label htmlFor="email">
+                                <FontAwesomeIcon icon={faEnvelope} />
+                                <span>E-posta Adresiniz</span>
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="E-posta adresinizi girin"
+                                required
+                            />
                         </div>
-                    )}
 
-                    <button 
-                        type="submit" 
-                        className="submit-button"
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <>
-                                <span className="spinner"></span>
-                                Kaydediliyor...
-                            </>
-                        ) : (
-                            'Etkinliğe Katıl'
-                        )}
-                    </button>
-                </form>
+                        <button 
+                            type="submit" 
+                            className="submit-button"
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <>
+                                    <span className="spinner"></span>
+                                    Kaydediliyor...
+                                </>
+                            ) : (
+                                'Etkinliğe Katıl'
+                            )}
+                        </button>
+                    </form>
+                )}
             </div>
         </div>
     );

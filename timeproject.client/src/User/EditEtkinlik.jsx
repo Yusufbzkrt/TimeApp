@@ -9,7 +9,9 @@ import {
     faSave, 
     faTimes, 
     faSpinner,
-    faArrowLeft
+    faArrowLeft,
+    faMapMarkerAlt,
+    faUsers
 } from '@fortawesome/free-solid-svg-icons';
 import './Etkinlikler.css';
 
@@ -22,6 +24,8 @@ const EditEtkinlik = () => {
         title: '',
         description: '',
         date: '',
+        location: '',
+        capacity: '',
         image: '',
         imageFile: null
     });
@@ -52,6 +56,8 @@ const EditEtkinlik = () => {
                 title: data.eventName,
                 description: data.description,
                 date: toLocalDatetimeInputValue(data.dateTime),
+                location: data.location || '',
+                capacity: data.capacity || '',
                 image: data.image || '',
                 imageFile: null
             });
@@ -77,6 +83,8 @@ const EditEtkinlik = () => {
             formData.append('EventName', form.title);
             formData.append('Description', form.description);
             formData.append('DateTime', new Date(form.date).toISOString());
+            formData.append('Location', form.location);
+            formData.append('Capacity', form.capacity);
             if (form.imageFile) {
                 formData.append('Image', form.imageFile);
             }
@@ -89,15 +97,15 @@ const EditEtkinlik = () => {
                 body: formData,
             });
 
-            if (res.ok) {
-                alert('Etkinlik başarıyla güncellendi');
-                navigate('/user/etkinlikler');
-            } else {
-                alert('Etkinlik güncellenemedi');
+            if (!res.ok) {
+                throw new Error('Güncelleme başarısız oldu');
             }
+
+            alert('Etkinlik başarıyla güncellendi');
+            navigate('/user/etkinlikler');
         } catch (err) {
             console.error('Güncelleme hatası:', err);
-            alert('Bir hata oluştu');
+            alert('Güncelleme sırasında bir hata oluştu');
         } finally {
             setSaving(false);
         }
@@ -184,6 +192,37 @@ const EditEtkinlik = () => {
                                 type="datetime-local"
                                 value={form.date}
                                 onChange={(e) => setForm({ ...form, date: e.target.value })}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>
+                                <FontAwesomeIcon icon={faMapMarkerAlt} />
+                                Konum
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Etkinlik konumunu girin"
+                                value={form.location}
+                                onChange={(e) => setForm({ ...form, location: e.target.value })}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>
+                                <FontAwesomeIcon icon={faUsers} />
+                                Kapasite
+                            </label>
+                            <input
+                                type="number"
+                                min="1"
+                                placeholder="Maksimum katılımcı sayısı"
+                                value={form.capacity}
+                                onChange={(e) => setForm({ ...form, capacity: e.target.value })}
                                 required
                             />
                         </div>

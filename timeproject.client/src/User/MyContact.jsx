@@ -8,6 +8,7 @@ import {
     faEdit, 
     faCamera,
     faSpinner,
+    faCoins,
     faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 import './MyContact.css';
@@ -105,6 +106,13 @@ const MyContact = () => {
                         <div className="info-content">
                             <span className="info-label">Telefon</span>
                             <span className="info-value">{userInfo.phoneNumber}</span>
+                        </div>
+                    </div>
+                    <div className="info-item">
+                        <FontAwesomeIcon icon={faCoins} className="info-icon" />
+                        <div className="info-content">
+                            <span className="info-label">Kalan kredi miktarı</span>
+                            <span className="info-value">{userInfo.credit}</span>
                         </div>
                     </div>
                 </div>

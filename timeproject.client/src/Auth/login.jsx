@@ -18,12 +18,21 @@ const LoginPage = () => {
                 body: JSON.stringify({ email, password }),
             });
 
+            console.log('Login response status:', response.status);
+            const data = await response.json();
+            console.log('Login response data:', data);
+
             if (response.ok) {
-                const data = await response.json();
                 if (data.token) {
                     localStorage.setItem('authToken', data.token);
-                    localStorage.setItem("userId", data.userId);
-                    window.location.href = '/user/home';  // Giriş başarılıysa anasayfaya yönlendir
+                    localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('userName', data.userName || data.name);
+                    console.log('LocalStorage kaydedilen değerler:', {
+                        token: localStorage.getItem('authToken'),
+                        userId: localStorage.getItem('userId'),
+                        userName: localStorage.getItem('userName')
+                    });
+                    window.location.href = '/user/home';
                 }
             } else {
                 const errorData = await response.json();

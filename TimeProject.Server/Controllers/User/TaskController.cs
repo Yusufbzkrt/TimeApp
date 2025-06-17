@@ -7,11 +7,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using TimeProject.Server.Data;
 using TimeProject.Models;
+using System.Security.Claims;
+using Nest;
+using TimeProject.Server.Model.Dto;
 
 namespace TimeProject.Controllers.User
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
         private readonly TimeProjectDbContext _context;
@@ -23,33 +26,25 @@ namespace TimeProject.Controllers.User
 
         // GET: api/Task/GetTasks
         [HttpGet("GetTasks")]
-        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<Tasks>>> GetTasks()
         {
             try
             {
-                var userId = int.Parse(User.FindFirst("UserID")?.Value);
-                var tasks = await _context.TaskModel
-                    .Where(t => t.UserId == userId)
-                    .OrderBy(t => t.DueDate)
-                    .Select(t => new TaskModel
-                    {
-                        TaskID = t.TaskID,
-                        TaskName = t.TaskName,
-                        Description = t.Description,
-                        DueDate = t.DueDate,
-                        Priority = t.Priority,
-                        Status = t.Status,
-                        UserId = t.UserId,
-                        CreatedDate = t.CreatedDate,
-                        UpdatedDate = t.UpdatedDate,
-                        CreatedByUserName = _context.User
-                            .Where(u => u.UserId == t.UserId)
-                            .Select(u => u.Name)
-                            .FirstOrDefault()
-                    })
-                    .ToListAsync();
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Geçersiz kullanıcı" });
+                }
+                var userId = int.Parse(userIdClaim.Value);
+                var events = await _context.Tasks
+                 .Where(e => e.UserId == userId)
+                 .ToListAsync();
+                if (events == null || events.Count == 0)
+                {
+                    return NotFound("Etkinlik bulunamadı.");
+                }
 
-                return Ok(tasks);
+                return Ok(events);
             }
             catch (Exception ex)
             {
@@ -59,24 +54,25 @@ namespace TimeProject.Controllers.User
 
         // POST: api/Task/add
         [HttpPost("add")]
-        public async Task<ActionResult<TaskModel>> AddTask(TaskModel task)
+        public async Task<ActionResult<Task>> AddTask(TaskCreateDto taskDto)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst("UserID")?.Value);
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                int userId = int.Parse(userIdClaim.Value);
 
-                var newTask = new TaskModel
+                var newTask = new Tasks
                 {
-                    TaskName = task.TaskName,
-                    Description = task.Description,
-                    DueDate = task.DueDate,
-                    Priority = task.Priority,
-                    Status = task.Status ?? "pending",
+                    TaskName = taskDto.TaskName,
+                    Description = taskDto.Description,
+                    DueDate = taskDto.DueDate,
+                    Priority = taskDto.Priority,
+                    Status = taskDto.Status ?? "pending",
                     UserId = userId,
                     CreatedDate = DateTime.Now
                 };
 
-                _context.TaskModel.Add(newTask);
+                _context.Tasks.Add(newTask);
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(GetTasks), new { id = newTask.TaskID }, newTask);
@@ -87,21 +83,25 @@ namespace TimeProject.Controllers.User
             }
         }
 
+
         // PUT: api/Task/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, TaskModel task)
+        [HttpPut("{taskID}")]
+        public async Task<IActionResult> UpdateTask(int taskID, Tasks task)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst("UserID")?.Value);
-                var existingTask = await _context.TaskModel
-                    .FirstOrDefaultAsync(t => t.TaskID == id && t.UserId == userId);
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                int userId = int.Parse(userIdClaim.Value);
+                var existingTask = await _context.Tasks
+                    .FirstOrDefaultAsync(t => t.TaskID == taskID && t.UserId == userId);
 
                 if (existingTask == null)
                 {
                     return NotFound(new { message = "Görev bulunamadı veya erişim izniniz yok" });
                 }
 
+                existingTask.UserId = userId;
+                existingTask.TaskID = task.TaskID; // Ensure TaskID is not changed
                 existingTask.TaskName = task.TaskName;
                 existingTask.Description = task.Description;
                 existingTask.DueDate = task.DueDate;
@@ -109,7 +109,8 @@ namespace TimeProject.Controllers.User
                 existingTask.Status = task.Status;
                 existingTask.UpdatedDate = DateTime.Now;
 
-                await _context.SaveChangesAsync();
+                _context.Entry(existingTask).State = EntityState.Modified;
+                var result = await _context.SaveChangesAsync();
 
                 return Ok(new { message = "Görev başarıyla güncellendi" });
             }
@@ -119,25 +120,46 @@ namespace TimeProject.Controllers.User
             }
         }
 
-        // DELETE: api/Task/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTask(int id)
+        [HttpPut("{taskID}/status")]
+        public async Task<IActionResult> UpdateTaskStatus(int taskID, [FromBody] TaskStatusDto dto)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst("UserID")?.Value);
-                var task = await _context.TaskModel
-                    .FirstOrDefaultAsync(t => t.TaskID == id && t.UserId == userId);
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                int userId = int.Parse(userIdClaim.Value);
+
+                var task = await _context.Tasks
+                    .FirstOrDefaultAsync(t => t.TaskID == taskID && t.UserId == userId);
 
                 if (task == null)
-                {
-                    return NotFound(new { message = "Görev bulunamadı veya erişim izniniz yok" });
-                }
+                    return NotFound(new { message = "Görev bulunamadı veya erişim izniniz yok." });
 
-                _context.TaskModel.Remove(task);
+                task.Status = dto.Status?.ToLower();
+                task.UpdatedDate = DateTime.Now;
+
+                _context.Tasks.Update(task);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { message = "Görev başarıyla silindi" });
+                return Ok(new { message = "Görev durumu başarıyla güncellendi." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Durum güncellenirken bir hata oluştu: " + ex.Message });
+            }
+        }
+
+
+        // DELETE: api/Task/{id}
+        [HttpDelete("{taskID}")]
+        public async Task<IActionResult> DeleteTask(int taskID)
+        {
+            try 
+            {
+                var task = await _context.Tasks.FindAsync(taskID);
+                if (task == null) return NotFound();
+                _context.Tasks.Remove(task);
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Etkinlik başarıyla silindi." });
             }
             catch (Exception ex)
             {

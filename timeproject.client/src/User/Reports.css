@@ -1,7 +1,7 @@
 .reports-container {
     padding: 2rem;
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 600px auto 30px;
     min-height: calc(100vh - 150px);
     background-color: var(--bg-primary);
     color: var(--text-primary);

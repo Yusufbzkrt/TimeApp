@@ -19,7 +19,7 @@ namespace TimeProject.Server.Model.Configuration
             builder.Property(u => u.AccountStatusId).HasMaxLength(50);
 
             // Admin kullanıcısını ekleyelim
-            var passwordHash = BCrypt.HashPassword("1212");
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword("1212");
 
             builder.HasData(
                 new User

@@ -1,218 +1,222 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faFile, 
-    faFilePdf, 
-    faFileWord, 
-    faFileExcel, 
-    faFileImage, 
-    faTrash, 
-    faDownload, 
-    faShare, 
-    faSearch,
-    faFolder,
+import {
+    faFileAlt,
+    faDownload,
+    faTrash,
     faPlus,
-    faSort,
-    faFilter
+    faSpinner,
+    faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons';
-import './Document.css';
+import "./Document.css";
 
 const Document = () => {
     const [documents, setDocuments] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortBy, setSortBy] = useState('date');
-    const [filterType, setFilterType] = useState('all');
-    const [selectedFiles, setSelectedFiles] = useState([]);
-    const [isUploading, setIsUploading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
 
-    // Örnek doküman verileri
     useEffect(() => {
-        const mockDocuments = [
-            { id: 1, name: 'Proje Raporu.pdf', type: 'pdf', size: '2.5MB', date: '2024-03-15', category: 'Raporlar' },
-            { id: 2, name: 'Toplantı Notları.docx', type: 'docx', size: '1.2MB', date: '2024-03-14', category: 'Notlar' },
-            { id: 3, name: 'Bütçe Tablosu.xlsx', type: 'xlsx', size: '3.8MB', date: '2024-03-13', category: 'Finans' },
-            { id: 4, name: 'Logo.png', type: 'png', size: '500KB', date: '2024-03-12', category: 'Görseller' },
-        ];
-        setDocuments(mockDocuments);
+        fetchDocuments();
     }, []);
 
-    const handleFileSelect = (event) => {
-        const files = Array.from(event.target.files);
-        setSelectedFiles(files);
+    const fetchDocuments = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch('https://localhost:7120/api/Document/GetDocuments', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Dökümanlar yüklenirken bir hata oluştu');
+            }
+
+            const data = await response.json();
+            setDocuments(data);
+            setError(null);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedFile(file);
+        }
     };
 
     const handleUpload = async () => {
-        if (selectedFiles.length === 0) return;
-
-        setIsUploading(true);
-        setUploadProgress(0);
-
-        // Simüle edilmiş yükleme işlemi
-        for (let i = 0; i <= 100; i += 10) {
-            await new Promise(resolve => setTimeout(resolve, 200));
-            setUploadProgress(i);
+        if (!selectedFile) {
+            setError('Lütfen bir dosya seçin');
+            return;
         }
 
-        // Yeni dosyaları listeye ekle
-        const newDocuments = selectedFiles.map((file, index) => ({
-            id: documents.length + index + 1,
-            name: file.name,
-            type: file.name.split('.').pop(),
-            size: `${(file.size / 1024 / 1024).toFixed(1)}MB`,
-            date: new Date().toISOString().split('T')[0],
-            category: 'Yeni Yüklenenler'
-        }));
+        try {
+            setUploading(true);
+            const formData = new FormData();
+            formData.append('file', selectedFile);
 
-        setDocuments([...documents, ...newDocuments]);
-        setSelectedFiles([]);
-        setIsUploading(false);
-        setUploadProgress(0);
-    };
+            const response = await fetch('https://localhost:7120/api/Document/UploadDocument', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`
+                },
+                body: formData
+            });
 
-    const handleDelete = (id) => {
-        setDocuments(documents.filter(doc => doc.id !== id));
-    };
+            if (!response.ok) {
+                throw new Error('Dosya yüklenirken bir hata oluştu');
+            }
 
-    const handleDownload = (document) => {
-        // Simüle edilmiş indirme işlemi
-        console.log(`İndiriliyor: ${document.name}`);
-    };
-
-    const handleShare = (document) => {
-        // Simüle edilmiş paylaşım işlemi
-        console.log(`Paylaşılıyor: ${document.name}`);
-    };
-
-    const getFileIcon = (type) => {
-        switch (type.toLowerCase()) {
-            case 'pdf': return faFilePdf;
-            case 'docx':
-            case 'doc': return faFileWord;
-            case 'xlsx':
-            case 'xls': return faFileExcel;
-            case 'png':
-            case 'jpg':
-            case 'jpeg': return faFileImage;
-            default: return faFile;
+            await fetchDocuments();
+            setSelectedFile(null);
+            setError(null);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setUploading(false);
         }
     };
 
-    const filteredDocuments = documents
-        .filter(doc => 
-            doc.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            (filterType === 'all' || doc.type.toLowerCase() === filterType.toLowerCase())
-        )
-        .sort((a, b) => {
-            if (sortBy === 'date') {
-                return new Date(b.date) - new Date(a.date);
+    const handleDownload = async (documentId, fileName) => {
+        try {
+            const response = await fetch(`https://localhost:7120/api/Document/DownloadDocument/${documentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Dosya indirilirken bir hata oluştu');
             }
-            if (sortBy === 'name') {
-                return a.name.localeCompare(b.name);
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const handleDelete = async (documentId) => {
+        if (!window.confirm('Bu dökümanı silmek istediğinizden emin misiniz?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://localhost:7120/api/Document/DeleteDocument/${documentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Döküman silinirken bir hata oluştu');
             }
-            if (sortBy === 'size') {
-                return parseFloat(b.size) - parseFloat(a.size);
-            }
-            return 0;
-        });
+
+            await fetchDocuments();
+            setError(null);
+        } catch (err) {
+            setError(err.message);
+        }
+    };
 
     return (
         <div className="document-container">
             <div className="document-header">
-                <h1>Dokümanlarım</h1>
-                <div className="document-actions">
-                    <div className="search-bar">
-                        <FontAwesomeIcon icon={faSearch} />
-                        <input
-                            type="text"
-                            placeholder="Doküman ara..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                    <div className="filter-sort">
-                        <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-                            <option value="all">Tüm Dosyalar</option>
-                            <option value="pdf">PDF</option>
-                            <option value="docx">Word</option>
-                            <option value="xlsx">Excel</option>
-                            <option value="png">Görsel</option>
-                        </select>
-                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                            <option value="date">Tarihe Göre</option>
-                            <option value="name">İsme Göre</option>
-                            <option value="size">Boyuta Göre</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div className="upload-section">
-                <div className="upload-area">
+                <h1>
+                    <FontAwesomeIcon icon={faFileAlt} />
+                    Dökümanlarım
+                </h1>
+                <div className="upload-section">
                     <input
                         type="file"
-                        multiple
-                        onChange={handleFileSelect}
                         id="file-upload"
+                        onChange={handleFileChange}
                         className="file-input"
+                        accept=".pdf,.doc,.docx,.txt"
                     />
                     <label htmlFor="file-upload" className="upload-button">
                         <FontAwesomeIcon icon={faPlus} />
                         <span>Dosya Seç</span>
                     </label>
-                    {selectedFiles.length > 0 && (
-                        <button 
-                            className="upload-submit"
+                    {selectedFile && (
+                        <button
+                            className="upload-submit-button"
                             onClick={handleUpload}
-                            disabled={isUploading}
+                            disabled={uploading}
                         >
-                            {isUploading ? 'Yükleniyor...' : 'Yükle'}
+                            {uploading ? (
+                                <>
+                                    <FontAwesomeIcon icon={faSpinner} spin />
+                                    <span>Yükleniyor...</span>
+                                </>
+                            ) : (
+                                <span>Yükle</span>
+                            )}
                         </button>
                     )}
                 </div>
-                {isUploading && (
-                    <div className="upload-progress">
-                        <div 
-                            className="progress-bar"
-                            style={{ width: `${uploadProgress}%` }}
-                        />
-                    </div>
-                )}
             </div>
 
-            <div className="documents-grid">
-                {filteredDocuments.map(doc => (
-                    <div key={doc.id} className="document-card">
-                        <div className="document-icon">
-                            <FontAwesomeIcon icon={getFileIcon(doc.type)} />
-                        </div>
-                        <div className="document-info">
-                            <h3>{doc.name}</h3>
-                            <p className="document-meta">
-                                <span>{doc.size}</span>
-                                <span>{doc.date}</span>
-                                <span>{doc.category}</span>
-                            </p>
-                        </div>
-                        <div className="document-actions">
-                            <button onClick={() => handleDownload(doc)} title="İndir">
-                                <FontAwesomeIcon icon={faDownload} />
-                            </button>
-                            <button onClick={() => handleShare(doc)} title="Paylaş">
-                                <FontAwesomeIcon icon={faShare} />
-                            </button>
-                            <button onClick={() => handleDelete(doc.id)} title="Sil">
-                                <FontAwesomeIcon icon={faTrash} />
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
+            {error && (
+                <div className="error-message">
+                    <FontAwesomeIcon icon={faExclamationTriangle} />
+                    <p>{error}</p>
+                </div>
+            )}
 
-            {filteredDocuments.length === 0 && (
+            {loading ? (
+                <div className="loading-container">
+                    <FontAwesomeIcon icon={faSpinner} spin />
+                    <p>Dökümanlar yükleniyor...</p>
+                </div>
+            ) : documents.length === 0 ? (
                 <div className="no-documents">
-                    <FontAwesomeIcon icon={faFolder} size="3x" />
-                    <p>Henüz doküman bulunmuyor</p>
+                    <p>Henüz döküman bulunmuyor.</p>
+                </div>
+            ) : (
+                <div className="document-list">
+                    {documents.map((doc) => (
+                        <div key={doc.id} className="document-item">
+                            <div className="document-info">
+                                <FontAwesomeIcon icon={faFileAlt} className="document-icon" />
+                                <div className="document-details">
+                                    <h3>{doc.fileName}</h3>
+                                    <p>Yüklenme Tarihi: {new Date(doc.uploadDate).toLocaleDateString('tr-TR')}</p>
+                                </div>
+                            </div>
+                            <div className="document-actions">
+                                <button
+                                    className="download-button"
+                                    onClick={() => handleDownload(doc.id, doc.fileName)}
+                                >
+                                    <FontAwesomeIcon icon={faDownload} />
+                                    <span>İndir</span>
+                                </button>
+                                <button
+                                    className="delete-button"
+                                    onClick={() => handleDelete(doc.id)}
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                    <span>Sil</span>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

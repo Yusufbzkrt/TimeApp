@@ -1,2 +1,55 @@
 body {
 }
+
+.edit-event-form .ql-container {
+    height: 200px;
+    margin-bottom: 20px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.edit-event-form .ql-toolbar {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+.edit-event-form .ql-editor {
+    min-height: 200px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.edit-event-form .ql-editor p {
+    margin-bottom: 1em;
+}
+
+.edit-event-form .ql-editor ul,
+.edit-event-form .ql-editor ol {
+    padding-left: 1.5em;
+}
+
+.edit-event-form .ql-editor h1,
+.edit-event-form .ql-editor h2,
+.edit-event-form .ql-editor h3,
+.edit-event-form .ql-editor h4,
+.edit-event-form .ql-editor h5,
+.edit-event-form .ql-editor h6 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+
+.edit-event-form .ql-editor img {
+    max-width: 100%;
+    height: auto;
+    margin: 1em 0;
+}
+
+.edit-event-form .ql-editor a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.edit-event-form .ql-editor a:hover {
+    text-decoration: underline;
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faClock, faTasks, faUser, faBell, faCog, faSignOutAlt, faHome, faChartLine, faFileAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClock, faTasks, faUser, faCalendarDays, faBlog , faBell, faCog, faSignOutAlt, faHome, faChartLine, faFileAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import './UserLayout.css';
 
 const UserLayout = () => {
@@ -25,6 +25,14 @@ const UserLayout = () => {
                     <Link to="/user/iletisim" className="sidebar-item">
                         <FontAwesomeIcon icon={faUser} />
                         <span>Profil</span>
+                    </Link>
+                    <Link to="Events" className="sidebar-item">
+                        <FontAwesomeIcon icon={faCalendarDays} />
+                        <span>Etkinliklere Gözat</span>
+                    </Link>
+                    <Link to="blogs" className="sidebar-item">
+                        <FontAwesomeIcon icon={faBlog} />
+                        <span>Bloglar</span>
                     </Link>
                     <Link to="/user/calendar" className="sidebar-item">
                         <FontAwesomeIcon icon={faCalendar} />

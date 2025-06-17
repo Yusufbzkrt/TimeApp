@@ -77,6 +77,9 @@ namespace TimeProject.Server.Controllers.User
                     EventName = evntDto.EventName,
                     Description = evntDto.Description,
                     DateTime = evntDto.DateTime,
+                    Location = evntDto.Location,
+                    Capacity = evntDto.Capacity,
+                    Credit = evntDto.Credit,
                     CreatedByUserID = userId,
                     Image = imagePath,
                     IsActive = true
@@ -89,6 +92,9 @@ namespace TimeProject.Server.Controllers.User
                     EventName = eventEntity.EventName,
                     Description = eventEntity.Description,
                     DateTime = eventEntity.DateTime,
+                    Location = eventEntity.Location,
+                    Capacity = eventEntity.Capacity,
+                    Credit = eventEntity.Credit,
 
                 };
 
@@ -129,6 +135,10 @@ namespace TimeProject.Server.Controllers.User
             evnt.EventName = evntDto.EventName;
             evnt.Description = evntDto.Description;
             evnt.DateTime = evntDto.DateTime;
+            evnt.Location = evntDto.Location;
+            evnt.Capacity = evntDto.Capacity;
+            evnt.Credit = evntDto.Credit;
+
 
             if (evntDto.Image != null)
             {

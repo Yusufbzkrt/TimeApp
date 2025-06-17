@@ -1,0 +1,230 @@
+.contact-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.contact-content {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    padding: 2.5rem;
+}
+
+.contact-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.contact-header h1 {
+    color: #2d3748;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.contact-header p {
+    color: #718096;
+    font-size: 1.1rem;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.form-group label svg {
+    color: #4299e1;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    background-color: white;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #a0aec0;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.submit-button,
+.home-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.submit-button {
+    background-color: #4299e1;
+    color: white;
+}
+
+.submit-button:hover {
+    background-color: #3182ce;
+    transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.home-button {
+    background-color: #718096;
+    color: white;
+}
+
+.home-button:hover {
+    background-color: #4a5568;
+    transform: translateY(-1px);
+}
+
+.success-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.success-buttons .new-message-button,
+.success-buttons .home-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+.error-message {
+    background-color: #fff5f5;
+    color: #c53030;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #feb2b2;
+    margin-top: 1rem;
+}
+
+.success-message {
+    text-align: center;
+    padding: 2rem;
+}
+
+.success-message .success-icon {
+    font-size: 3rem;
+    color: #48bb78;
+    margin-bottom: 1rem;
+}
+
+.success-message h2 {
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.success-message p {
+    color: #718096;
+    margin-bottom: 1.5rem;
+}
+
+.new-message-button {
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.new-message-button:hover {
+    background-color: #38a169;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+    .contact-container {
+        padding: 1rem;
+    }
+
+    .contact-content {
+        padding: 1.5rem;
+    }
+
+    .contact-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .contact-header p {
+        font-size: 1rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        font-size: 0.95rem;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+    .success-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .success-buttons .new-message-button,
+    .success-buttons .home-button {
+        width: 100%;
+        max-width: 300px;
+    }
+} 

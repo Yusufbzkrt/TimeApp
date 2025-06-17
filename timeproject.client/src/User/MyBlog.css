@@ -169,15 +169,15 @@ body {
 
 .blog-card {
     background: white;
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: transform 0.2s;
 }
 
 .blog-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+    transform: translateY(-2px);
 }
 
 .blog-card-header {
@@ -191,58 +191,253 @@ body {
     margin-bottom: 10px;
 }
 
-.blog-date {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #6b7280;
-    font-size: 0.9rem;
+.blog-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
 }
 
-.blog-date svg {
-    color: #6366f1;
+.blog-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .blog-content {
-    color: #4b5563;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 25px;
+    padding: 1.5rem;
+}
+
+.blog-content h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.blog-preview {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.blog-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.blog-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.blog-date svg {
+    color: #007bff;
 }
 
 .blog-actions {
     display: flex;
-    gap: 15px;
+    gap: 0.5rem;
 }
 
-.edit-button,
-.delete-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
+.blog-actions button {
+    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: 4px;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.preview-button {
+    background-color: #f8f9fa;
+    color: #666;
+}
+
+.preview-button:hover {
+    background-color: #e9ecef;
+    color: #333;
 }
 
 .edit-button {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background-color: #007bff;
     color: white;
+}
+
+.edit-button:hover {
+    background-color: #0056b3;
 }
 
 .delete-button {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background-color: #dc3545;
     color: white;
 }
 
-.edit-button:hover,
 .delete-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    background-color: #c82333;
+}
+
+.image-upload {
+    margin-top: 0.5rem;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-input-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.file-input-label:hover {
+    background-color: #e9ecef;
+}
+
+.image-preview {
+    margin-top: 1rem;
+    max-width: 300px;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.preview-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.preview-content {
+    background-color: white;
+    border-radius: 12px;
+    max-width: 900px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.preview-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+}
+
+.preview-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.preview-image-container {
+    width: 100%;
+    padding: 0 2rem;
+    margin: 1.5rem 0;
+}
+
+.preview-image {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.preview-body {
+    padding: 0 2rem 2rem;
+}
+
+.preview-meta {
+    margin-bottom: 1.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.preview-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+    border-radius: 20px;
+}
+
+.preview-date svg {
+    color: #007bff;
+}
+
+.preview-text {
+    color: #444;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.preview-text p {
+    margin-bottom: 1.5rem;
+}
+
+.preview-text img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+.close-button:hover {
+    background-color: #f8f9fa;
+    color: #333;
 }
 
 .no-blogs {
@@ -274,322 +469,6 @@ body {
     color: #ef4444;
 }
 
-.image-upload {
-    margin-bottom: 25px;
-}
-
-.image-upload-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 24px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: white;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.1rem;
-    font-weight: 500;
-}
-
-.image-upload-label:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-}
-
-.image-input {
-    display: none;
-}
-
-.image-preview {
-    margin-top: 20px;
-    position: relative;
-    max-width: 300px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.image-preview img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-.remove-image {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(239, 68, 68, 0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.remove-image:hover {
-    background: rgb(220, 38, 38);
-    transform: scale(1.1);
-}
-
-.blog-image {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 12px 12px 0 0;
-    margin-bottom: 20px;
-}
-
-.blog-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.blog-card:hover .blog-image img {
-    transform: scale(1.05);
-}
-
-.preview-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-}
-
-.preview-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-}
-
-.preview-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
-}
-
-.preview-modal-content {
-    background: white;
-    border-radius: 20px;
-    max-width: 800px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    padding: 40px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-
-.close-modal {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: #f3f4f6;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #4b5563;
-}
-
-.close-modal:hover {
-    background: #e5e7eb;
-    transform: rotate(90deg);
-}
-
-.preview-image {
-    width: 100%;
-    height: 300px;
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 30px;
-}
-
-.preview-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.preview-header {
-    margin-bottom: 30px;
-}
-
-.preview-header h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 15px;
-}
-
-.preview-date {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #6b7280;
-    font-size: 1rem;
-}
-
-.preview-date svg {
-    color: #6366f1;
-}
-
-.preview-body {
-    color: #4b5563;
-    font-size: 1.1rem;
-    line-height: 1.8;
-}
-
-.preview-body p {
-    margin-bottom: 20px;
-}
-
-/* Quill Editor Styles */
-.quill-editor {
-    background: white;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.quill-editor .ql-container {
-    min-height: 200px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    font-size: 1rem;
-}
-
-.quill-editor .ql-toolbar {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    background: #f8f9fa;
-    border-color: #e0e0e0;
-}
-
-.quill-editor .ql-toolbar button {
-    width: 28px;
-    height: 28px;
-    margin: 2px;
-    border-radius: 4px;
-}
-
-.quill-editor .ql-toolbar button:hover {
-    background: #e9ecef;
-}
-
-.quill-editor .ql-toolbar button.ql-active {
-    background: #3498db;
-    color: white;
-}
-
-.quill-editor .ql-editor {
-    padding: 15px;
-    line-height: 1.6;
-}
-
-.quill-editor .ql-editor p {
-    margin-bottom: 1em;
-}
-
-.quill-editor .ql-editor h1,
-.quill-editor .ql-editor h2,
-.quill-editor .ql-editor h3,
-.quill-editor .ql-editor h4,
-.quill-editor .ql-editor h5,
-.quill-editor .ql-editor h6 {
-    margin: 1em 0 0.5em;
-}
-
-.quill-editor .ql-editor ul,
-.quill-editor .ql-editor ol {
-    padding-left: 1.5em;
-    margin-bottom: 1em;
-}
-
-.quill-editor .ql-editor a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-.quill-editor .ql-editor a:hover {
-    text-decoration: underline;
-}
-
-.quill-editor .ql-editor img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    margin: 1em 0;
-}
-
-/* Blog Preview Styles Update */
-.blog-preview .preview-content {
-    line-height: 1.8;
-}
-
-.blog-preview .preview-content h1,
-.blog-preview .preview-content h2,
-.blog-preview .preview-content h3,
-.blog-preview .preview-content h4,
-.blog-preview .preview-content h5,
-.blog-preview .preview-content h6 {
-    margin: 1em 0 0.5em;
-    color: #2c3e50;
-}
-
-.blog-preview .preview-content p {
-    margin-bottom: 1em;
-}
-
-.blog-preview .preview-content ul,
-.blog-preview .preview-content ol {
-    margin: 1em 0;
-    padding-left: 1.5em;
-}
-
-.blog-preview .preview-content a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-.blog-preview .preview-content a:hover {
-    text-decoration: underline;
-}
-
-.blog-preview .preview-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin: 1em 0;
-}
-
 @media (max-width: 768px) {
     .my-blog-container {
         margin: 80px 20px 30px;
@@ -606,15 +485,6 @@ body {
 
     .blog-form {
         padding: 20px;
-    }
-
-    .quill-editor .ql-toolbar {
-        flex-wrap: wrap;
-    }
-
-    .quill-editor .ql-toolbar button {
-        width: 24px;
-        height: 24px;
     }
 
     .form-buttons {
@@ -635,34 +505,37 @@ body {
         height: 180px;
     }
 
-    .preview-modal-content {
-        padding: 30px 20px;
+    .preview-content {
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .preview-header {
+        padding: 1rem;
     }
 
     .preview-header h2 {
         font-size: 1.5rem;
     }
 
-    .preview-image {
-        height: 200px;
+    .preview-image-container {
+        padding: 0 1rem;
     }
 
     .preview-body {
+        padding: 0 1rem 1rem;
+    }
+
+    .preview-text {
         font-size: 1rem;
     }
 
     .blog-actions {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 10px;
+        flex-direction: column;
     }
 
-    .preview-button,
-    .edit-button,
-    .delete-button {
-        flex: 1;
-        min-width: 100px;
-        justify-content: center;
+    .blog-actions button {
+        width: 100%;
     }
 }
 

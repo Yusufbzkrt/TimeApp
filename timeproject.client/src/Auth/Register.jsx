@@ -45,13 +45,23 @@ const RegisterPage = () => {
                 alert("Kayıt başarılı! Giriş yapabilirsiniz.");
                 window.location.href = '/login';
             } else {
-                const errorData = await response.json();
-                alert(errorData.message);
+                let errorMessage = "Bir hata oluştu.";
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorMessage;
+                } catch (e) {
+                    const text = await response.text();
+                    console.error("Sunucudan geçersiz JSON geldi:", text);
+                    errorMessage = text;
+                }
+                alert(errorMessage);
             }
         } catch (error) {
-            console.error("Registration error:", error);
-            alert("Bir hata oluştu, tekrar deneyin.");
+            console.error("İstek atılırken hata:", error);
+            alert("Sunucuya ulaşılamadı, lütfen daha sonra tekrar deneyin.");
         }
+
+
     };
 
     return (
