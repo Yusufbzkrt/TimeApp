@@ -3,6 +3,7 @@ using TimeProject.Models;
 using TimeProject.Server.Configurations;
 using TimeProject.Server.Model;
 using TimeProject.Server.Model.Configuration;
+using TimeProject.Server.Model.Dto.Auth;
 
 namespace TimeProject.Server.Data
 {
@@ -24,6 +25,9 @@ namespace TimeProject.Server.Data
         public DbSet<EventParticipant> EventParticipants { get; set; }
         public DbSet<EmailSettings> EmailSettings { get; set; }
         public DbSet<Document> Documents { get; set; } 
+        public DbSet<SettingsSite> SettingsSites { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

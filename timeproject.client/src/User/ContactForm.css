@@ -110,6 +110,9 @@
     background-color: #4299e1;
     color: white;
 }
+.submit-button span{
+    color:white;
+}
 
 .submit-button:hover {
     background-color: #3182ce;
@@ -123,7 +126,7 @@
 }
 
 .home-button {
-    background-color: #718096;
+    background-color: #4299e1;
     color: white;
 }
 

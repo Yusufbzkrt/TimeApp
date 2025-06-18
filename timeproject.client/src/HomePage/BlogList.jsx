@@ -19,7 +19,7 @@ const BlogList = () => {
         const fetchBlogs = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('https://localhost:7120/api/homepage/allblogs');
+                const response = await fetch('https://localhost:7120/api/blog/all');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

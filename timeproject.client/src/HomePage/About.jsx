@@ -18,7 +18,7 @@ const About = () => {
             <main className="homepage-content">
                 <div className="about-container">
                     <div className="about-header">
-                        <h1>Hakkımızda</h1>
+                        <p>Hakkımızda</p>
                         <p>Time Bank ile zamanınızı daha verimli yönetin</p>
                     </div>
 

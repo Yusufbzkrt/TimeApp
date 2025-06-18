@@ -33,6 +33,8 @@ import BlogList from './HomePage/BlogList';
 import HelpPage from './HomePage/HelpPage';
 import HomePageLayout from './HomePage/HomePageLayout';
 import AllBlog from './User/AllBlog';
+import ForgotPassword from './Auth/ForgotPassword';
+import './index.css';
 
 function App() {
     return (
@@ -53,7 +55,8 @@ function App() {
 
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                       
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+
                         <Route path="/join/:eventId" element={<JoinForm />} />
                         <Route path="reset-password" element={<ResetPassword />} />
 

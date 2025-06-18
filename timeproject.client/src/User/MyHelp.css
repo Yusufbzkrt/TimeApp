@@ -1,6 +1,6 @@
 .help-container {
     max-width: 1200px;
-    margin: 1450px auto 30px;
+    margin: 14px auto 30px;
     padding: 40px;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -208,6 +208,7 @@
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    color:white;
 }
 
 .contact-button {
@@ -224,11 +225,16 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
+    .contact-button span{
+        color:white
+    }
 
-.contact-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
-}
+    .contact-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        color: yellow;
+    }
+
 
 @media (max-width: 768px) {
     .help-container {

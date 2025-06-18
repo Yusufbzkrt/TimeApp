@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeProject.Server.Data;
 
@@ -11,9 +12,11 @@ using TimeProject.Server.Data;
 namespace TimeProject.Server.Migrations
 {
     [DbContext(typeof(TimeProjectDbContext))]
-    partial class TimeProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250617210326_ApplicationUsertwo")]
+    partial class ApplicationUsertwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,32 +220,6 @@ namespace TimeProject.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Documents");
-                });
-
-            modelBuilder.Entity("TimeProject.Server.Model.Dto.Auth.PasswordResetToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PasswordResetTokens");
                 });
 
             modelBuilder.Entity("TimeProject.Server.Model.EmailSettings", b =>
@@ -619,11 +596,11 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 1,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 6, 18, 3, 1, 45, 821, DateTimeKind.Local).AddTicks(1296),
+                            CreateDate = new DateTime(2025, 6, 18, 0, 3, 26, 350, DateTimeKind.Local).AddTicks(7634),
                             Credit = 0,
                             Email = "admin@example.com",
                             Name = "Yusuf",
-                            PasswordHash = "$2a$11$PpblaKgqJIXcbHQDjTDcgu1wXKN6KOK/OvSOG5EvDtz7WZFayKwWO",
+                            PasswordHash = "$2a$11$RsAHyiiX/VvxEnC19Mq5muPsfh.qpX86PRl/tMx0ZRBypsRofXjhm",
                             PhoneNumber = "1234567890",
                             RoleId = 1,
                             Surname = "Bozkurt",
@@ -634,11 +611,11 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 2,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 6, 18, 3, 1, 45, 821, DateTimeKind.Local).AddTicks(1314),
+                            CreateDate = new DateTime(2025, 6, 18, 0, 3, 26, 350, DateTimeKind.Local).AddTicks(7660),
                             Credit = 0,
                             Email = "mehmet@example.com",
                             Name = "Mehmet",
-                            PasswordHash = "$2a$11$PpblaKgqJIXcbHQDjTDcgu1wXKN6KOK/OvSOG5EvDtz7WZFayKwWO",
+                            PasswordHash = "$2a$11$RsAHyiiX/VvxEnC19Mq5muPsfh.qpX86PRl/tMx0ZRBypsRofXjhm",
                             PhoneNumber = "05537668452",
                             RoleId = 2,
                             Surname = "Ali",
@@ -648,11 +625,11 @@ namespace TimeProject.Server.Migrations
                         {
                             UserId = 3,
                             AccountStatusId = "Active",
-                            CreateDate = new DateTime(2025, 6, 18, 3, 1, 45, 821, DateTimeKind.Local).AddTicks(1316),
+                            CreateDate = new DateTime(2025, 6, 18, 0, 3, 26, 350, DateTimeKind.Local).AddTicks(7662),
                             Credit = 0,
                             Email = "ahmet@example.com",
                             Name = "ahmet",
-                            PasswordHash = "$2a$11$PpblaKgqJIXcbHQDjTDcgu1wXKN6KOK/OvSOG5EvDtz7WZFayKwWO",
+                            PasswordHash = "$2a$11$RsAHyiiX/VvxEnC19Mq5muPsfh.qpX86PRl/tMx0ZRBypsRofXjhm",
                             PhoneNumber = "05528445566",
                             RoleId = 2,
                             Surname = "can",

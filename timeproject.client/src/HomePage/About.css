@@ -9,7 +9,7 @@
 .about-container {
     max-width: 1200px;
     width: 100%;
-    margin: 40px auto 60px;
+    margin: -850px auto 60px;
     padding: 0 20px;
     font-family: 'Poppins', sans-serif;
     position: relative;
@@ -28,13 +28,15 @@
 
     .about-header h1 {
         font-size: 3rem;
-        font-weight: 700;
+        font-weight: 900;
         margin-bottom: 20px;
+        color:white;
     }
 
     .about-header p {
         font-size: 1.2rem;
         opacity: 0.9;
+        color: white;
     }
 
 /* Misyon bölümü */

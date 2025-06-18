@@ -1,257 +1,195 @@
-import React, { useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faSun, 
-    faMoon, 
-    faBell, 
-    faLanguage, 
-    faUser, 
-    faPalette,
-    faVolumeUp,
-    faVolumeMute,
-    faSave,
-    faCheck
-} from '@fortawesome/free-solid-svg-icons';
+import { faSun, faMoon, faFont, faBell, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import './Ayarlar.css';
 
 const Ayarlar = () => {
-    const { isDarkMode, toggleTheme } = useTheme();
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [fontSize, setFontSize] = useState('medium');
+    const [notifications, setNotifications] = useState(true);
+    const [language, setLanguage] = useState('tr');
     const [settings, setSettings] = useState({
-        notifications: {
-            email: true,
-            push: true,
-            sound: true
-        },
-        language: 'tr',
+        theme: 'light',
         fontSize: 'medium',
-        soundEnabled: true,
-        autoSave: true
+        notifications: true,
+        language: 'tr'
     });
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const [saveStatus, setSaveStatus] = useState('');
-
-    const handleNotificationChange = (type) => {
-        setSettings(prev => ({
-            ...prev,
-            notifications: {
-                ...prev.notifications,
-                [type]: !prev.notifications[type]
+    // Kullanıcı ayarlarını getir
+    const fetchUserSettings = async () => {
+        try {
+            const response = await fetch('https://localhost:7120/api/Settings', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Ayarlar yüklenirken bir hata oluştu');
             }
-        }));
+
+            const data = await response.json();
+            setSettings(data);
+        } catch (err) {
+            setError(err.message);
+            console.error('Ayarlar yüklenirken hata:', err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleLanguageChange = (lang) => {
-        setSettings(prev => ({
-            ...prev,
-            language: lang
-        }));
+    useEffect(() => {
+        fetchUserSettings();
+    }, []);
+
+    const toggleTheme = () => {
+        setIsDarkMode(!isDarkMode);
+        document.body.classList.toggle('dark');
     };
 
     const handleFontSizeChange = (size) => {
-        setSettings(prev => ({
-            ...prev,
-            fontSize: size
-        }));
+        setFontSize(size);
+        // Yazı boyutunu uygula
+        document.body.className = `font-size-${size}`;
     };
 
-    const handleSoundToggle = () => {
-        setSettings(prev => ({
-            ...prev,
-            soundEnabled: !prev.soundEnabled
-        }));
+    const handleNotificationChange = (enabled) => {
+        setNotifications(enabled);
     };
 
-    const handleAutoSaveToggle = () => {
-        setSettings(prev => ({
-            ...prev,
-            autoSave: !prev.autoSave
-        }));
+    const handleLanguageChange = (lang) => {
+        setLanguage(lang);
     };
 
-    const saveSettings = () => {
-        // Burada ayarları localStorage'a kaydedebilir veya API'ye gönderebilirsiniz
-        localStorage.setItem('userSettings', JSON.stringify(settings));
-        setSaveStatus('success');
-        setTimeout(() => setSaveStatus(''), 2000);
+    const saveSettingsToBackend = async (newSettings) => {
+        try {
+            const response = await fetch('https://localhost:7120/api/Settings', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+                },
+                body: JSON.stringify(newSettings)
+            });
+
+            if (!response.ok) {
+                throw new Error('Ayarlar kaydedilirken bir hata oluştu');
+            }
+
+            setSettings(newSettings);
+        } catch (err) {
+            setError(err.message);
+            console.error('Ayarlar kaydedilirken hata:', err);
+        }
     };
+
+    const handleThemeChange = async () => {
+        const newTheme = !isDarkMode;
+        toggleTheme();
+        
+        const newSettings = {
+            ...settings,
+            theme: newTheme ? 'dark' : 'light'
+        };
+        setSettings(newSettings);
+        await saveSettingsToBackend(newSettings);
+    };
+
+    if (isLoading) {
+        return <div className="loading">Yükleniyor...</div>;
+    }
+
+    if (error) {
+        return <div className="error">{error}</div>;
+    }
 
     return (
         <div className="settings-container">
-            <div className="settings-header">
-                <h1>Ayarlar</h1>
-                <p>Hesap ve uygulama tercihlerinizi buradan yönetebilirsiniz</p>
+            <h2>Ayarlar</h2>
+            
+            <div className="settings-section">
+                <h3>
+                    <FontAwesomeIcon icon={faSun} /> Tema
+                </h3>
+                <div className="theme-buttons">
+                    <button 
+                        className={`theme-btn ${!isDarkMode ? 'active' : ''}`}
+                        onClick={() => !isDarkMode && handleThemeChange()}
+                    >
+                        <FontAwesomeIcon icon={faSun} />
+                        <span>Açık Tema</span>
+                    </button>
+                    <button 
+                        className={`theme-btn ${isDarkMode ? 'active' : ''}`}
+                        onClick={() => isDarkMode && handleThemeChange()}
+                    >
+                        <FontAwesomeIcon icon={faMoon} />
+                        <span>Koyu Tema</span>
+                    </button>
+                </div>
             </div>
 
-            <div className="settings-content">
-                <div className="settings-section">
-                    <div className="section-header">
-                        <FontAwesomeIcon icon={faPalette} className="section-icon" />
-                        <h2>Görünüm</h2>
-                    </div>
-                    <div className="settings-grid">
-                        <div className="setting-item">
-                            <div className="setting-info">
-                                <h3>Tema</h3>
-                                <p>Koyu veya açık tema seçin</p>
-                            </div>
-                            <div className="theme-toggle">
-                                <button 
-                                    className={`theme-btn ${!isDarkMode ? 'active' : ''}`}
-                                    onClick={() => !isDarkMode && toggleTheme()}
-                                >
-                                    <FontAwesomeIcon icon={faSun} />
-                                    <span>Açık</span>
-                                </button>
-                                <button 
-                                    className={`theme-btn ${isDarkMode ? 'active' : ''}`}
-                                    onClick={() => isDarkMode && toggleTheme()}
-                                >
-                                    <FontAwesomeIcon icon={faMoon} />
-                                    <span>Koyu</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="setting-item">
-                            <div className="setting-info">
-                                <h3>Yazı Boyutu</h3>
-                                <p>Metin boyutunu ayarlayın</p>
-                            </div>
-                            <div className="font-size-selector">
-                                {['small', 'medium', 'large'].map(size => (
-                                    <button
-                                        key={size}
-                                        className={`font-size-btn ${settings.fontSize === size ? 'active' : ''}`}
-                                        onClick={() => handleFontSizeChange(size)}
-                                    >
-                                        {size === 'small' ? 'A' : size === 'medium' ? 'A' : 'A'}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="settings-section">
-                    <div className="section-header">
-                        <FontAwesomeIcon icon={faBell} className="section-icon" />
-                        <h2>Bildirimler</h2>
-                    </div>
-                    <div className="settings-grid">
-                        <div className="setting-item">
-                            <div className="setting-info">
-                                <h3>E-posta Bildirimleri</h3>
-                                <p>Önemli güncellemeler için e-posta alın</p>
-                            </div>
-                            <label className="switch">
-                                <input
-                                    type="checkbox"
-                                    checked={settings.notifications.email}
-                                    onChange={() => handleNotificationChange('email')}
-                                />
-                                <span className="slider"></span>
-                            </label>
-                        </div>
-
-                        <div className="setting-item">
-                            <div className="setting-info">
-                                <h3>Push Bildirimleri</h3>
-                                <p>Anlık bildirimler alın</p>
-                            </div>
-                            <label className="switch">
-                                <input
-                                    type="checkbox"
-                                    checked={settings.notifications.push}
-                                    onChange={() => handleNotificationChange('push')}
-                                />
-                                <span className="slider"></span>
-                            </label>
-                        </div>
-
-                        <div className="setting-item">
-                            <div className="setting-info">
-                                <h3>Ses Bildirimleri</h3>
-                                <p>Bildirim seslerini açın/kapatın</p>
-                            </div>
-                            <button 
-                                className="sound-toggle"
-                                onClick={handleSoundToggle}
-                            >
-                                <FontAwesomeIcon icon={settings.soundEnabled ? faVolumeUp : faVolumeMute} />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="settings-section">
-                    <div className="section-header">
-                        <FontAwesomeIcon icon={faLanguage} className="section-icon" />
-                        <h2>Dil ve Bölge</h2>
-                    </div>
-                    <div className="settings-grid">
-                        <div className="setting-item">
-                            <div className="setting-info">
-                                <h3>Dil Seçimi</h3>
-                                <p>Uygulama dilini değiştirin</p>
-                            </div>
-                            <div className="language-selector">
-                                <button
-                                    className={`lang-btn ${settings.language === 'tr' ? 'active' : ''}`}
-                                    onClick={() => handleLanguageChange('tr')}
-                                >
-                                    Türkçe
-                                </button>
-                                <button
-                                    className={`lang-btn ${settings.language === 'en' ? 'active' : ''}`}
-                                    onClick={() => handleLanguageChange('en')}
-                                >
-                                    English
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="settings-section">
-                    <div className="section-header">
-                        <FontAwesomeIcon icon={faUser} className="section-icon" />
-                        <h2>Profil Tercihleri</h2>
-                    </div>
-                    <div className="settings-grid">
-                        <div className="setting-item">
-                            <div className="setting-info">
-                                <h3>Otomatik Kaydet</h3>
-                                <p>Değişiklikleri otomatik kaydet</p>
-                            </div>
-                            <label className="switch">
-                                <input
-                                    type="checkbox"
-                                    checked={settings.autoSave}
-                                    onChange={handleAutoSaveToggle}
-                                />
-                                <span className="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="settings-actions">
+            <div className="settings-section">
+                <h3>
+                    <FontAwesomeIcon icon={faFont} /> Yazı Boyutu
+                </h3>
+                <div className="font-size-buttons">
                     <button 
-                        className="save-button"
-                        onClick={saveSettings}
+                        className={`font-size-btn ${fontSize === 'small' ? 'active' : ''}`}
+                        onClick={() => handleFontSizeChange('small')}
                     >
-                        {saveStatus === 'success' ? (
-                            <>
-                                <FontAwesomeIcon icon={faCheck} />
-                                <span>Kaydedildi</span>
-                            </>
-                        ) : (
-                            <>
-                                <FontAwesomeIcon icon={faSave} />
-                                <span>Değişiklikleri Kaydet</span>
-                            </>
-                        )}
+                        Küçük
+                    </button>
+                    <button 
+                        className={`font-size-btn ${fontSize === 'medium' ? 'active' : ''}`}
+                        onClick={() => handleFontSizeChange('medium')}
+                    >
+                        Orta
+                    </button>
+                    <button 
+                        className={`font-size-btn ${fontSize === 'large' ? 'active' : ''}`}
+                        onClick={() => handleFontSizeChange('large')}
+                    >
+                        Büyük
+                    </button>
+                </div>
+            </div>
+
+            <div className="settings-section">
+                <h3>
+                    <FontAwesomeIcon icon={faBell} /> Bildirimler
+                </h3>
+                <div className="notification-toggle">
+                    <label className="switch">
+                        <input 
+                            type="checkbox" 
+                            checked={notifications}
+                            onChange={(e) => handleNotificationChange(e.target.checked)}
+                        />
+                        <span className="slider"></span>
+                    </label>
+                    <span>Bildirimleri {notifications ? 'Açık' : 'Kapalı'}</span>
+                </div>
+            </div>
+
+            <div className="settings-section">
+                <h3>
+                    <FontAwesomeIcon icon={faLanguage} /> Dil
+                </h3>
+                <div className="language-buttons">
+                    <button 
+                        className={`language-btn ${language === 'tr' ? 'active' : ''}`}
+                        onClick={() => handleLanguageChange('tr')}
+                    >
+                        Türkçe
+                    </button>
+                    <button 
+                        className={`language-btn ${language === 'en' ? 'active' : ''}`}
+                        onClick={() => handleLanguageChange('en')}
+                    >
+                        English
                     </button>
                 </div>
             </div>

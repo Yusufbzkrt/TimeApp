@@ -14,6 +14,8 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using TimeProject.Server.Helpers;
 using MailKit.Security;
+using Microsoft.AspNetCore.Identity;
+using TimeProject.Server.Service;
 
 
 namespace TimeProject.Server.Controllers
@@ -22,13 +24,20 @@ namespace TimeProject.Server.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly TimeProjectDbContext _context;
+        private readonly EmailService _emailService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(TimeProjectDbContext context, IConfiguration configuration)
+
+        public AuthController(TimeProjectDbContext context, IConfiguration configuration, UserManager<ApplicationUser> userManager, ILogger<AuthController> logger, EmailService emailService)
         {
             _context = context;
             _configuration = configuration;
+            _userManager = userManager;
+            _logger = logger;
+            _emailService = emailService;
         }
 
         [HttpPost("register")]
@@ -133,47 +142,110 @@ namespace TimeProject.Server.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (user == null)
+            try
             {
-                return Ok(new { message = "Şifre sıfırlama linki e-posta adresinize gönderildi." });
+                _logger.LogInformation($"Şifre sıfırlama isteği başladı. Email: {request.Email}");
+
+                if (string.IsNullOrEmpty(request.Email))
+                {
+                    _logger.LogWarning("Email adresi boş gönderildi");
+                    return BadRequest(new { message = "Email adresi gereklidir." });
+                }
+
+                // Users tablosundan kullanıcıyı bul
+                var user = await _context.User.FirstOrDefaultAsync(u => u.Email == request.Email);
+                _logger.LogInformation($"Kullanıcı bulundu mu: {user != null}");
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"Kullanıcı bulunamadı: {request.Email}");
+                    return Ok(new
+                    {
+                        message = "Bu email adresi ile kayıtlı bir hesap bulunamadı. Lütfen kayıt olun.",
+                        userNotFound = true
+                    });
+                }
+
+                // Şifre sıfırlama token'ı oluştur
+                var token = Guid.NewGuid().ToString();
+
+                // Token'ı veritabanına kaydet
+                var resetToken = new Model.Dto.Auth.PasswordResetToken
+                {
+                    UserId = user.UserId,
+                    Token = token,
+                    ExpiryDate = DateTime.UtcNow.AddHours(1)
+                };
+
+                _context.PasswordResetTokens.Add(resetToken);
+                await _context.SaveChangesAsync();
+
+                var frontendUrl = _configuration["FrontendUrl"] ?? "http://localhost:3000";
+                var resetLink = $"{frontendUrl}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(user.Email)}";
+
+                var emailBody = $@"
+            <h2>Şifre Sıfırlama</h2>
+            <p>Merhaba {user.Name},</p>
+            <p>Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:</p>
+            <p><a href='{resetLink}'>Şifremi Sıfırla</a></p>
+            <p>Bu bağlantı 1 saat süreyle geçerlidir.</p>";
+
+                await _emailService.SendEmailAsync(user.Email, "Şifre Sıfırlama", emailBody);
+
+                return Ok(new { message = "Şifre sıfırlama bağlantısı email adresinize gönderildi." });
             }
-
-            var token = Guid.NewGuid().ToString();
-
-            user.PasswordResetToken = token;
-            user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(1);
-
-            await _context.SaveChangesAsync();
-
-            var resetLink = $"https://senin-site-adresin.com/reset-password?email={user.Email}&token={token}";
-            await SendEmailAsync(user.Email, "Şifre Sıfırlama", $"Şifrenizi yenilemek için tıklayın: {resetLink}");
-
-            return Ok(new { message = "Şifre sıfırlama linki e-posta adresinize gönderildi." });
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Şifre sıfırlama işlemi sırasında beklenmeyen hata");
+                return StatusCode(500, new { message = "Şifre sıfırlama işlemi sırasında bir hata oluştu.", details = ex.Message });
+            }
         }
 
-
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        public async Task<IActionResult> ResetPassword([FromBody] Model.Dto.Auth.ResetPasswordRequest request)
         {
-            var user = await _context.User.FirstOrDefaultAsync(u =>
-                u.Email == dto.Email &&
-                u.PasswordResetToken == dto.Token &&
-                u.PasswordResetTokenExpires > DateTime.UtcNow);
+            try
+            {
+                _logger.LogInformation($"Şifre sıfırlama isteği alındı. Email: {request.Email}");
 
-            if (user == null)
-                return BadRequest(new { message = "Geçersiz veya süresi dolmuş token." });
+                if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Token) || string.IsNullOrEmpty(request.NewPassword))
+                {
+                    return BadRequest(new { message = "Tüm alanlar gereklidir." });
+                }
 
-            // Şifreyi hash'leyip kaydet
-            user.PasswordHash = PasswordHelper.HashPassword(dto.NewPassword);
-            user.PasswordResetToken = null;
-            user.PasswordResetTokenExpires = null;
+                // Users tablosundan kullanıcıyı bul
+                var user = await _context.User.FirstOrDefaultAsync(u => u.Email == request.Email);
+                if (user == null)
+                {
+                    return BadRequest(new { message = "Geçersiz kullanıcı." });
+                }
 
-            await _context.SaveChangesAsync();
+                // Token'ı kontrol et
+                var resetToken = await _context.PasswordResetTokens
+                    .FirstOrDefaultAsync(t => t.UserId == user.UserId && t.Token == request.Token && !t.IsUsed);
 
-            return Ok(new { message = "Şifre başarıyla yenilendi." });
+                if (resetToken == null || resetToken.ExpiryDate < DateTime.UtcNow)
+                {
+                    return BadRequest(new { message = "Geçersiz veya süresi dolmuş token." });
+                }
+
+                // Şifreyi güncelle
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                resetToken.IsUsed = true;
+
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Şifre başarıyla güncellendi. Email: {request.Email}");
+
+                return Ok(new { message = "Şifreniz başarıyla güncellendi." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Şifre sıfırlama işlemi sırasında hata oluştu");
+                return StatusCode(500, new { message = "Şifre sıfırlama işlemi sırasında bir hata oluştu.", details = ex.Message });
+            }
         }
 
         [HttpPost("send-email")]

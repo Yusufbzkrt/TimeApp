@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -43,7 +44,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization(); 
+builder.Services.AddAuthorization();
+
+builder.Services.AddIdentityCore<ApplicationUser>(options => {
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<TimeProjectDbContext>()
+.AddDefaultTokenProviders();
+
 
 // Servislerin eklenmesi
 builder.Services.AddDbContext<TimeProjectDbContext>(options =>
@@ -56,6 +69,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -64,6 +78,9 @@ builder.Services.AddSignalR();
 //email services
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<EmailService>();
+
+builder.Services.AddScoped<SettingsService>();
+
 
 // Reports
 builder.Services.AddScoped<ReportsService>();
@@ -104,11 +121,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
+
 // CORS Middleware
 app.UseCors("AllowAll");
 
 app.UseSession();
+
+app.UseRouting();
 
 app.UseAuthentication(); 
 app.UseAuthorization();  

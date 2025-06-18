@@ -1,27 +1,33 @@
-body {
+html, body, #root {
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    margin-right:-100px
 }
 
 .events-container {
     max-width: 1200px;
-    margin: 80px auto 40px; /* Navbar yüksekliği + alt margin */
-    padding: 20px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
     background-color: #f8f9fa;
-    min-height: calc(100vh - 120px); /* Navbar + margin yüksekliği */
     display: flex;
     flex-direction: column;
     gap: 20px;
-    position: relative;
-    z-index: 1;
+    box-sizing: border-box;
 }
 
 .events-header {
     flex-shrink: 0;
+    margin-top:60px;
 }
+.events-header p{
+    color:white;
+}
+
+    .events-header h1 {
+        color: white;
+    }
 
 .events-controls {
     flex-shrink: 0;

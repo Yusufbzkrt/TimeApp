@@ -75,10 +75,15 @@ body {
 }
 
 .home-footer {
-    background: #2d3748;
+    background: #3ba816;
     color: white;
     padding: 40px 0 20px;
     margin-top: auto;
+    width: 100vw; /* viewport geniþliðini kaplar */
+    position: relative; /* ya da static */
+    left: -50px;
+    right: 0;
+    box-sizing: border-box;
 }
 
 .footer-content {

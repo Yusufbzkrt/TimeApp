@@ -2,10 +2,10 @@
 :root {
     /* Light Theme (Default) */
     --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --border-color: rgba(226, 232, 240, 0.8);
+    --bg-secondary: #f8f9fa;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #dee2e6;
     --accent-color: #6366f1;
     --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
     --shadow-color: rgba(0, 0, 0, 0.1);
@@ -16,24 +16,32 @@
     --button-text: #ffffff;
     --button-bg: #6366f1;
     --button-hover: #4f46e5;
+    /* Varsayılan yazı boyutları */
+    --font-size-small: 14px;
+    --font-size-medium: 16px;
+    --font-size-large: 18px;
+    /* Diğer CSS değişkenleri */
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --error-color: #dc3545;
 }
 
 /* Dark Theme */
-.dark {
-    --bg-primary: #1e293b;
-    --bg-secondary: #0f172a;
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --border-color: rgba(255, 255, 255, 0.1);
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --border-color: #404040;
     --accent-color: #818cf8;
     --accent-gradient: linear-gradient(135deg, #818cf8, #a78bfa);
     --shadow-color: rgba(0, 0, 0, 0.3);
-    --card-bg: #1e293b;
+    --card-bg: #2d2d2d;
     --hover-bg: #2d3748;
-    --input-bg: #1e293b;
+    --input-bg: #333333;
     --input-border: #334155;
     --button-text: #ffffff;
-    --button-bg: #818cf8;
+    --button-bg: #4f46e5;
     --button-hover: #6366f1;
 }
 
@@ -42,6 +50,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: font-size 0.3s ease, all 0.3s ease;
 }
 
 body {
@@ -121,3 +130,64 @@ button:focus-visible {
   }
 }
 */
+
+/* Yazı boyutu sınıfları */
+.font-size-small {
+  font-size: var(--font-size-small) !important;
+}
+
+.font-size-medium {
+  font-size: var(--font-size-medium) !important;
+}
+
+.font-size-large {
+  font-size: var(--font-size-large) !important;
+}
+
+/* Utility sınıfları */
+.text-xs { font-size: var(--font-size-small) !important; }
+.text-sm { font-size: var(--font-size-medium) !important; }
+.text-lg { font-size: var(--font-size-large) !important; }
+
+h1 { font-size: var(--font-size-large) !important; }
+h2 { font-size: calc(var(--font-size-large) * 0.9) !important; }
+h3 { font-size: calc(var(--font-size-large) * 0.8) !important; }
+h4 { font-size: calc(var(--font-size-large) * 0.7) !important; }
+h5 { font-size: calc(var(--font-size-large) * 0.6) !important; }
+h6 { font-size: calc(var(--font-size-large) * 0.5) !important; }
+
+p { font-size: var(--font-size-medium) !important; }
+small { font-size: var(--font-size-small) !important; }
+
+/* Card styles */
+.card, .blog-card, .task-card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+/* Input styles */
+input, textarea, select {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+/* Button styles */
+button {
+  background-color: var(--button-bg);
+  color: white;
+}
+
+button:hover {
+  background-color: var(--button-hover);
+}
+
+/* Text styles */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}
+
+p, span {
+  color: var(--text-secondary);
+}
